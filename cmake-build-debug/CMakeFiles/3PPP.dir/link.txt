@@ -1,0 +1,1 @@
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/3PPP.dir/main.c.o CMakeFiles/3PPP.dir/utf8lib/lib-utf8.c.o CMakeFiles/3PPP.dir/funcs.c.o  -o 3PPP.exe -Wl,--out-implib,lib3PPP.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

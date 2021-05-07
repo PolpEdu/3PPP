@@ -1,3 +1,1 @@
-"F:\Programas Lucemilda\Clion\CLion 2020.3.2\bin\cmake\win\bin\cmake.exe" -E rm -f CMakeFiles\PPPTrabalho3.dir/objects.a
-"F:\Programas Lucemilda\mingw64\bin\ar.exe" cr CMakeFiles\PPPTrabalho3.dir/objects.a @CMakeFiles\PPPTrabalho3.dir\objects1.rsp
-"F:\Programas Lucemilda\mingw64\bin\gcc.exe" -g   -Wl,--whole-archive CMakeFiles\PPPTrabalho3.dir/objects.a -Wl,--no-whole-archive  -o PPPTrabalho3.exe -Wl,--out-implib,libPPPTrabalho3.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\PPPTrabalho3.dir\linklibs.rsp
+/usr/bin/cc -g  -Wl,--enable-auto-import CMakeFiles/PPPTrabalho3.dir/main.c.o CMakeFiles/PPPTrabalho3.dir/utf8lib/lib-utf8.c.o CMakeFiles/PPPTrabalho3.dir/funcs.c.o  -o PPPTrabalho3.exe -Wl,--out-implib,libPPPTrabalho3.dll.a -Wl,--major-image-version,0,--minor-image-version,0 

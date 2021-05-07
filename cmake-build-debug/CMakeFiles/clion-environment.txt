@@ -1,4 +1,4 @@
-ToolSet: w64 6.0 (local)@F:\Programas Lucemilda\mingw64
+ToolSet: 3.1.7 (local)@C:\cygwin64
 Options: 
 
 Options:

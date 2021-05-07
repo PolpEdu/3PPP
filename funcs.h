@@ -1,12 +1,11 @@
 //
-// Created by Utilizador on 06/05/2021.
+// Created by Utilizador on 07/05/2021.
 //
 
-#ifndef PPPTRABALHO3_FUNCS_H
-#define PPPTRABALHO3_FUNCS_H
+#ifndef INC_3PPP_FUNCS_H
+#define INC_3PPP_FUNCS_H
 
 
 void lerficheiro();
 
-
-#endif //PPPTRABALHO3_FUNCS_H
+#endif //INC_3PPP_FUNCS_H

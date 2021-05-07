@@ -4,9 +4,9 @@ set(CMAKE_DEPENDS_LANGUAGES
   )
 # The set of files for implicit dependencies of each language:
 set(CMAKE_DEPENDS_CHECK_C
-  "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcs.c" "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/funcs.c.obj"
-  "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/main.c" "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/main.c.obj"
-  "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/utf8lib/lib-utf8.c" "C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/utf8lib/lib-utf8.c.obj"
+  "/cygdrive/c/Users/Utilizador/Documents/3PPP/funcs.c" "/cygdrive/c/Users/Utilizador/Documents/3PPP/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/funcs.c.o"
+  "/cygdrive/c/Users/Utilizador/Documents/3PPP/main.c" "/cygdrive/c/Users/Utilizador/Documents/3PPP/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/main.c.o"
+  "/cygdrive/c/Users/Utilizador/Documents/3PPP/utf8lib/lib-utf8.c" "/cygdrive/c/Users/Utilizador/Documents/3PPP/cmake-build-debug/CMakeFiles/PPPTrabalho3.dir/utf8lib/lib-utf8.c.o"
   )
 set(CMAKE_C_COMPILER_ID "GNU")
 

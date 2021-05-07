@@ -1,0 +1,28 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/cygdrive/c/Users/Utilizador/Documents/3PPP/funcs.c
+stdio.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/stdio.h
+ctype.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/ctype.h
+structs.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/structs.h
+string.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/string.h
+utf8lib/lib-utf8.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/utf8lib/lib-utf8.h
+
+/cygdrive/c/Users/Utilizador/Documents/3PPP/structs.h
+
+/cygdrive/c/Users/Utilizador/Documents/3PPP/utf8lib/lib-utf8.h
+stddef.h
+-
+stdio.h
+/cygdrive/c/Users/Utilizador/Documents/3PPP/utf8lib/stdio.h
+
