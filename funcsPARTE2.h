@@ -9,8 +9,8 @@
 
 struct no_fila
 {
-    char FRASE[MAXFRASE];
-    int BYTEPOS_PAL_IGUAL_SEGUINTE[MAXNOME]; //int para o index da palavra igual seguinte
+    int BYTEPOS;
+    struct no_fila *next;
 };
 
 struct structpal {
