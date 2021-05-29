@@ -6,15 +6,19 @@
 
 #IncludeRegexTransform: 
 
-C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcs.c
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE1.c
 stdio.h
 C:/Users/Utilizador/CLionProjects/PPPTrabalho3/stdio.h
 ctype.h
 C:/Users/Utilizador/CLionProjects/PPPTrabalho3/ctype.h
-structs.h
-C:/Users/Utilizador/CLionProjects/PPPTrabalho3/structs.h
-strings.h
-C:/Users/Utilizador/CLionProjects/PPPTrabalho3/strings.h
+string.h
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/string.h
+stdlib.h
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/stdlib.h
+funcsPARTE1.h
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE1.h
+errno.h
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/errno.h
 
-C:/Users/Utilizador/CLionProjects/PPPTrabalho3/structs.h
+C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE1.h
 

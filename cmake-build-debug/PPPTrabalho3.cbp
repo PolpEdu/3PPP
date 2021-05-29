@@ -53,6 +53,42 @@
 					<DistClean command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
+			<Target title="PPPTrabalho3_mainparte2">
+				<Option output="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/PPPTrabalho3_mainparte2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 PPPTrabalho3_mainparte2"/>
+					<CompileFile command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="PPPTrabalho3_mainparte2/fast">
+				<Option output="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/PPPTrabalho3_mainparte2.exe" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include"/>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/include-fixed"/>
+					<Add directory="F:/Programas Lucemilda/mingw64/bin/../lib/gcc/x86_64-w64-mingw32/8.1.0/../../../../x86_64-w64-mingw32/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 PPPTrabalho3_mainparte2/fast"/>
+					<CompileFile command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="F:/Programas Lucemilda/mingw64/bin/mingw32-make.exe -f &quot;C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
 			<Target title="edit_cache">
 				<Option working_dir="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/cmake-build-debug"/>
 				<Option type="4"/>
@@ -74,23 +110,23 @@
 				</MakeCommands>
 			</Target>
 		</Build>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcs.c">
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE1.c">
 			<Option target="PPPTrabalho3"/>
 		</Unit>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcs.h">
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE1.h">
 			<Option target="PPPTrabalho3"/>
 		</Unit>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/main.c">
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE2.c">
+			<Option target="PPPTrabalho3_mainparte2"/>
+		</Unit>
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/funcsPARTE2.h">
+			<Option target="PPPTrabalho3_mainparte2"/>
+		</Unit>
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/mainPARTE1.c">
 			<Option target="PPPTrabalho3"/>
 		</Unit>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/structs.h">
-			<Option target="PPPTrabalho3"/>
-		</Unit>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/utf8lib/lib-utf8.c">
-			<Option target="PPPTrabalho3"/>
-		</Unit>
-		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/utf8lib/lib-utf8.h">
-			<Option target="PPPTrabalho3"/>
+		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/mainPARTE2.c">
+			<Option target="PPPTrabalho3_mainparte2"/>
 		</Unit>
 		<Unit filename="C:/Users/Utilizador/CLionProjects/PPPTrabalho3/CMakeLists.txt">
 			<Option virtualFolder="CMake Files\"/>
