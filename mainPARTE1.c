@@ -4,7 +4,7 @@
 
 int main(int argc, char *argv[])
 {
-    static char nome_fich2[MAXNOME + 1];
+    char nome_fich2[MAXNOME + 1];
     SetConsoleOutputCP( 65001 ); //para a consola dar print a utf-8 em windows
 
     lerficheiro(argc, argv, nome_fich2);

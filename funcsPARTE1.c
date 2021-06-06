@@ -6,8 +6,6 @@
 #include "errno.h"
 
 #define MAXNOME 50 //ESPAÇO MAXIMO QUE UMA PALAVRA PODE OCUPAR EM QUALQUER OCASIÃO.
-#define MAXTEXT 3000
-#define TAMFILA 1700
 
 //! Get do proximo input linha da consola.
 int get_one_line(FILE *fich, char *linha, int lim) {
@@ -147,7 +145,7 @@ void writestuct(FILE *fich2,char *palavra, int bytes){
         fwrite(&node, sizeof(struct structpal), 1,fich2);
         fseek(fich2, 0, SEEK_END);
         if(fwrite != 0)
-            fprintf(stdout, "Escrevi NÓ: [pal:%s bytepos:%d]\n",node.pal,node.bytespos);
+            fprintf(stdout, "Escrevi NÓ: [pal:%s bytepos:%ld]\n",node.pal,node.bytespos);
     }
 
     memset(&node, 0, sizeof(node));
@@ -194,7 +192,7 @@ void lerficheiro(int argc, char *argv[], char *nome_fich2) {
 
     char c;
     int bytes = 0, currentbytes = 0;
-    char palavra[MAXTEXT] = "";
+    char palavra[MAXNOME+1] = "";
 
 
     //usar a função do stor para ver os characteres reais do utf-8
