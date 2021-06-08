@@ -129,19 +129,6 @@ depend:
 .PHONY : depend
 
 #=============================================================================
-# Target rules for targets named PPPTrabalho3
-
-# Build rule for target.
-PPPTrabalho3: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 PPPTrabalho3
-.PHONY : PPPTrabalho3
-
-# fast build rule for target.
-PPPTrabalho3/fast:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/build
-.PHONY : PPPTrabalho3/fast
-
-#=============================================================================
 # Target rules for targets named PPPTrabalho3_mainparte2
 
 # Build rule for target.
@@ -153,6 +140,19 @@ PPPTrabalho3_mainparte2: cmake_check_build_system
 PPPTrabalho3_mainparte2/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3_mainparte2.dir\build.make CMakeFiles/PPPTrabalho3_mainparte2.dir/build
 .PHONY : PPPTrabalho3_mainparte2/fast
+
+#=============================================================================
+# Target rules for targets named PPPTrabalho3
+
+# Build rule for target.
+PPPTrabalho3: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 PPPTrabalho3
+.PHONY : PPPTrabalho3
+
+# fast build rule for target.
+PPPTrabalho3/fast:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/build
+.PHONY : PPPTrabalho3/fast
 
 funcsPARTE1.obj: funcsPARTE1.c.obj
 

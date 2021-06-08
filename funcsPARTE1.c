@@ -3,7 +3,6 @@
 #include "string.h"
 #include "stdlib.h"
 #include "funcsPARTE1.h"
-#include "errno.h"
 
 #define MAXNOME 50 //ESPAÇO MAXIMO QUE UMA PALAVRA PODE OCUPAR EM QUALQUER OCASIÃO.
 
@@ -100,7 +99,7 @@ void readfile(char *nome_fich2) {
     // fprintf(stdout, "\n\nReading.....\n");
     fseek(fich2B, 0, SEEK_END);
     int n = ftell(fich2B); //tamanho total
-    printf("tam tot: %d\n",n);
+    //printf("tam tot: %d\n",n);
 
     fseek(fich2B, 0, SEEK_SET);
     struct structpal noderead;

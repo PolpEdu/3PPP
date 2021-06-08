@@ -46,6 +46,6 @@ set(CMAKE_MAKEFILE_PRODUCTS
 
 # Dependency information for all targets:
 set(CMAKE_DEPEND_INFO_FILES
-  "CMakeFiles/PPPTrabalho3.dir/DependInfo.cmake"
   "CMakeFiles/PPPTrabalho3_mainparte2.dir/DependInfo.cmake"
+  "CMakeFiles/PPPTrabalho3.dir/DependInfo.cmake"
   )

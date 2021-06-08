@@ -71,8 +71,8 @@ CMAKE_BINARY_DIR = C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-de
 # Directory level rules for the build root directory
 
 # The main recursive "all" target.
-all: CMakeFiles/PPPTrabalho3.dir/all
 all: CMakeFiles/PPPTrabalho3_mainparte2.dir/all
+all: CMakeFiles/PPPTrabalho3.dir/all
 
 .PHONY : all
 
@@ -82,37 +82,10 @@ preinstall:
 .PHONY : preinstall
 
 # The main recursive "clean" target.
-clean: CMakeFiles/PPPTrabalho3.dir/clean
 clean: CMakeFiles/PPPTrabalho3_mainparte2.dir/clean
+clean: CMakeFiles/PPPTrabalho3.dir/clean
 
 .PHONY : clean
-
-#=============================================================================
-# Target rules for target CMakeFiles/PPPTrabalho3.dir
-
-# All Build rule for target.
-CMakeFiles/PPPTrabalho3.dir/all:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/depend
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/build
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles --progress-num=1,2,3 "Built target PPPTrabalho3"
-.PHONY : CMakeFiles/PPPTrabalho3.dir/all
-
-# Build rule for subdir invocation for target.
-CMakeFiles/PPPTrabalho3.dir/rule: cmake_check_build_system
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles 3
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/PPPTrabalho3.dir/all
-	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles 0
-.PHONY : CMakeFiles/PPPTrabalho3.dir/rule
-
-# Convenience name for target.
-PPPTrabalho3: CMakeFiles/PPPTrabalho3.dir/rule
-
-.PHONY : PPPTrabalho3
-
-# clean rule for target.
-CMakeFiles/PPPTrabalho3.dir/clean:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/clean
-.PHONY : CMakeFiles/PPPTrabalho3.dir/clean
 
 #=============================================================================
 # Target rules for target CMakeFiles/PPPTrabalho3_mainparte2.dir
@@ -140,6 +113,33 @@ PPPTrabalho3_mainparte2: CMakeFiles/PPPTrabalho3_mainparte2.dir/rule
 CMakeFiles/PPPTrabalho3_mainparte2.dir/clean:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3_mainparte2.dir\build.make CMakeFiles/PPPTrabalho3_mainparte2.dir/clean
 .PHONY : CMakeFiles/PPPTrabalho3_mainparte2.dir/clean
+
+#=============================================================================
+# Target rules for target CMakeFiles/PPPTrabalho3.dir
+
+# All Build rule for target.
+CMakeFiles/PPPTrabalho3.dir/all:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/depend
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/build
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --progress-dir=C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles --progress-num=1,2,3 "Built target PPPTrabalho3"
+.PHONY : CMakeFiles/PPPTrabalho3.dir/all
+
+# Build rule for subdir invocation for target.
+CMakeFiles/PPPTrabalho3.dir/rule: cmake_check_build_system
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles 3
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\Makefile2 CMakeFiles/PPPTrabalho3.dir/all
+	$(CMAKE_COMMAND) -E cmake_progress_start C:\Users\Utilizador\CLionProjects\PPPTrabalho3\cmake-build-debug\CMakeFiles 0
+.PHONY : CMakeFiles/PPPTrabalho3.dir/rule
+
+# Convenience name for target.
+PPPTrabalho3: CMakeFiles/PPPTrabalho3.dir/rule
+
+.PHONY : PPPTrabalho3
+
+# clean rule for target.
+CMakeFiles/PPPTrabalho3.dir/clean:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles\PPPTrabalho3.dir\build.make CMakeFiles/PPPTrabalho3.dir/clean
+.PHONY : CMakeFiles/PPPTrabalho3.dir/clean
 
 #=============================================================================
 # Special targets to cleanup operation of make.

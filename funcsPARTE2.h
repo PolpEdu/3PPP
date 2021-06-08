@@ -8,7 +8,7 @@
 // esta estrutura serve para ser usada como modulo de leitura
 // como escrevi com este tipo de estrutura vou ter que usar o mesmo tipo para ler.
 typedef struct structpalreadbin {
-    char pal[MAXNOME];
+    char pal[MAXNOME+1];
     long int bytespos; //bytes
 }  strctantg;
 
@@ -20,7 +20,6 @@ struct no_fila {
 struct listaBYTES {
     struct no_fila *raizlista;
 };
-
 
 //esta struct pal vai ser um nó de uma arvore.
 struct structpal {

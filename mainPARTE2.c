@@ -12,6 +12,7 @@ int main()
     readfileInserir("idx_fonte.bin",&arvore);
     mostrar_tudo(&arvore);
 
+
     pediraouser(&arvore, "fonte.txt");
 
     return 0;

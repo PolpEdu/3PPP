@@ -7,7 +7,7 @@
 
 //dar fwrite() a esta struct
 struct structpal {
-    char pal[MAXNOME];
+    char pal[MAXNOME+1];
     long int bytespos; //bytes
 };
 
