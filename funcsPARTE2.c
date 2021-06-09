@@ -1,16 +1,22 @@
+#include "stdlib.h"
 #include "stdio.h"
 #include "ctype.h"
 #include "string.h"
-#include "stdlib.h"
 #include "funcsPARTE2.h"
 #include "stdbool.h"
 
 bool colocar_lista(struct listaBYTES *pf, long int numero);
+
 struct no *addtree(struct no *pr, struct no *p, long int bytes);
+
 bool colocar(struct arvore_binaria *pa, struct structpalreadbin palinfodado);
+
 struct no *find_next(struct no *pr, const char *anterior, struct no *candidato);
+
 bool seguinte(struct arvore_binaria *pa, struct structpal *ppinfo);
+
 struct no *find(struct no *pr, char *pn);
+
 void mostrar_tudo(struct arvore_binaria *pa);
 
 static char acentuadas[][8] =
@@ -57,7 +63,7 @@ char *fgets_c_u8(char *s, int count, FILE *stream) {
 
 int numerodebytesnumchar(unsigned char val) {
     //o primeiro byte de uma char utf-8 diz quantos bytes há na palavra.
-    if(val == '\n') return 2; //adicionar esta exceção
+    if (val == '\n') return 2; //adicionar esta exceção
     else if (val < 128) {
         return 1;
     } else if (val < 224) {
@@ -178,34 +184,34 @@ void strtobase_u8(char *dest, const char *orig) {
 }
 
 bool colocar_lista(struct listaBYTES *pf, long int numero) {
-    struct no_fila *aux= NULL, *prox;
+    struct no_fila *aux = NULL, *prox;
 
     //Obter espaço para um novo nó
-    if(!aux){
-        aux = (struct no_fila *) malloc(sizeof(struct no_fila)+9);
-    }
+    aux = (struct no_fila *) malloc(sizeof(struct no_fila)*MAXNOME/2);
+    //printf("%d\n",aux);
     if (aux == NULL)
     {
-        printf("Não há espaço.");
         return false;
     }
 
-    //construir novo nó da filai
+
+    //construir novo nó da fila
     aux->BYTEPOS = numero;
     aux->next = NULL;
 
     //Procurar a posição onde a mensagem deve ficar
     prox = pf->raizlista;
-    if (pf->raizlista == NULL) {
+    if ( pf->raizlista == NULL) {
         // fila vazia, é a primeira mensagem
         pf->raizlista = aux;
+
     } else {
-        while (prox->next !=NULL) {
+
+        while (prox->next != NULL){
             prox = prox->next;
         }
         prox->next = aux;
     }
-
     return true;
 }
 
@@ -222,17 +228,16 @@ struct no *addtree(struct no *pr, struct no *p, long int bytes) {
 
         if ((cond = strcmp(nome1, nome2)) > 0) {
             pr->right = addtree(pr->right, p, bytes);
-        } else if (cond < 0){
+        } else if (cond < 0) {
             pr->left = addtree(pr->left, p, bytes);
-        }
-        else {
+        } else {
             colocar_lista(&pr->palinfo.nolistabytes, bytes);
         }
     }
     return pr;
 }
 
-bool colocar(struct arvore_binaria *pa, strctantg palinfodado) {
+bool colocar(struct arvore_binaria * pa, strctantg palinfodado) {
     struct no *p;
 
     p = (struct no *) malloc(sizeof(struct no)); // fazer novo nó com alocação dinâmica
@@ -248,10 +253,10 @@ bool colocar(struct arvore_binaria *pa, strctantg palinfodado) {
 
 struct no *find_next(struct no *pr, const char *anterior, struct no *candidato) {
     if (pr == NULL) return candidato;
-    char nome1[MAXNOME+1],nome2[MAXNOME+1];
-    strtobase_u8(nome1,anterior);
-    strtobase_u8(nome2,pr->palinfo.pal);
-    if (strcmp(nome1,nome2) >= 0)
+    char nome1[MAXNOME + 1], nome2[MAXNOME + 1];
+    strtobase_u8(nome1, anterior);
+    strtobase_u8(nome2, pr->palinfo.pal);
+    if (strcmp(nome1, nome2) >= 0)
         return find_next(pr->right, anterior, candidato);
     else
         return find_next(pr->left, anterior, pr);
@@ -273,7 +278,7 @@ struct no *find(struct no *pr, char *pn) {
     int cond;
     if (pr == NULL)
         return NULL;
-    char nome1[MAXNOME+1], nome2[MAXNOME+1];
+    char nome1[MAXNOME + 1], nome2[MAXNOME + 1];
     strtobase_u8(nome1, pr->palinfo.pal);
     strtobase_u8(nome2, pn);
     if ((cond = strcmp(nome1, nome2)) == 0)
@@ -294,7 +299,7 @@ void mostrar_tudo(struct arvore_binaria *pa) {
 
         aux = p->palinfo.nolistabytes.raizlista;
         printf("%ld\n", aux->BYTEPOS);
-        while(aux->next != NULL){
+        while (aux->next != NULL) {
             aux = aux->next;
             printf("%ld\n", aux->BYTEPOS);
 
@@ -337,94 +342,132 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
     fclose(fich2B);
 }
 
-int checkpontofinal(char c) {
-    char sep[36] = ".";
-    for (int j = 0; j < 34; ++j) {
-        if (sep[j] == c)
-        {
-            // ? fprintf(stdout, "hey found [%c]\n",c);
-            return 1;
-        }
-    }
-    return 0;
-}
 
-int checkcontexto(long int bytepal, char *nometxt){
+void checkcontexto(long int bytepal, char *nometxt) {
     /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
+    int bytes, currentbytes,pontosfinais[MAXNOME*2];
+    char fraseant[MAXFRASELEN +1] = "";
+    char frasemeio[MAXFRASELEN + 1] = "";
+    char frasepos[MAXFRASELEN + 1] = "";
+    char pedacotresfrases[(MAXFRASELEN+1)*3] = "";
     char c;
-    int bytes = 0, currentbytes = 0;
-    int pontosfinais[MAXNOME];
-    char fraseant[MAXNOME+1] = "";
-    char frasepos[MAXNOME+1] = "";
 
+    //inicializar a minha array que vai conter todos os pontos finais
+    for (int i = 0; i < MAXNOME*2; ++i) {
+        pontosfinais[i] = 0;
+    }
 
-    FILE *fich = NULL;
+    FILE *fichread = NULL;
     //Abrir um ficheiro para ler do contexto.
     char extension[3];
-    if ((fich = fopen(nometxt, "r")) == NULL) {
+    if ((fichread = fopen(nometxt, "r")) == NULL) {
         fprintf(stderr, "Ficheiro não existe. Tenta de novo:\n");
     } else {
+        //printf("%s\n", nometxt);
         strcpy(extension, getfileext(nometxt));
-        if (!strcmp(extension, "txt") == 0) {
+        if (!(strcmp(extension, "txt") == 0)) {
             fprintf(stderr, "O ficheiro não tem o formato valido para ser lido de modo a ver o contexto.\n");
-            fich = NULL;
+            fichread = NULL;
+
         }
     }
-    printf("Byte palavra visto: %d", bytepal);
-    while (fgets_c_u8(&c,1,fich) != NULL) {
-        currentbytes = numerodebytesnumchar((unsigned char)c);
-        //printf("CHAR- %c  BYTES- %d",c,currentbytes);
+
+    int i =0;
+    while (fgets_c_u8(&c, 1, fichread) != NULL) {
+        currentbytes = numerodebytesnumchar((unsigned char) c);
         bytes += currentbytes;
-
-
-        if (checkpontofinal(c)){
-            //SE C FOR UM PONTO FINAL NO FICHEIRO LIDO ESTAMOS NA PRESENÇA DE UMA FRASE
-            printf("\nBYTE DO POTNOFINAL %d\n", bytes);
-            //TODO: Se currentbytes for maior que aux->BYTEPOS estou antes. aux->BYTEPOS maior quer dizer q estou depois
+        //Find pontos todos os pontos finais.
+        if('.'==c){
+            //printf("\n%d\n", bytes);
+            pontosfinais[i] = bytes;
+            i++;
         }
-        if(bytes < bytepal){
-            //reset a variavel frase para se entrarmos outra vez, removo a frase anterior
-            memset(&fraseant, 0, sizeof(fraseant));
-            strcat(fraseant, &c);
-        }
-        else if(bytes > bytepal) {
-            strcat(frasepos, &c);
-        }
-
+        //printf("%s",&c);
     }
-    printf("Contexto:\nFrase Anterior:\n%s\nFrase Posterior:\n%s\n", fraseant, frasepos);
+
+    //tenho todos os pontos finais.
+    int frasetotinicio;
+    int frasetotfinal;
+    //vou agora ver onde é que o byte das palavras encaixa.
+    for (int j = 0; j < MAXNOME*2; ++j) {
+        //printf("pf: %d\n",pontosfinais[j]);
+        if(j>(sizeof(pontosfinais)/sizeof(pontosfinais[0]))){
+            break;
+        }
+        if((pontosfinais[j-1]< bytepal) && (bytepal< pontosfinais[j])) {
+            frasetotinicio = pontosfinais[j-2];
+            frasetotfinal = pontosfinais [j];
+        }
+    }
+    //segundo loop para ter a frase.
+    bytes =0;
+    fseek(fichread, 0, SEEK_SET); //voltar para o inicio.
+    while (fgets_c_u8(&c, 1, fichread) != NULL) {
+        currentbytes = numerodebytesnumchar((unsigned char) c);
+        bytes += currentbytes;
+        //Find pontos todos os pontos finais.
+        if(bytes>frasetotinicio && frasetotfinal>=bytes){
+            printf("%s",&c);
+            strcat(pedacotresfrases, &c);
+        }
+        //printf("%s",&c);
+    }
+    printf("PEDAÇO:\n%s\n", pedacotresfrases);
+
+
+    char *token;
+    //so falta seprar o pedaço das tres frases:
+    token = strtok(pedacotresfrases,".");
+    while (token != NULL){
+        printf("%s\n", token);
+        token= strtok(NULL,".");
+    }
+    memset(&token, 0, sizeof(token));
+
+
+    //fprintf(stdout, "Frase anterior: %s \nFrase posterior: %s\n",fraseant,frasepos);
+    fclose(fichread);
 }
+
 
 void printdecrescentelista(struct no_fila *aux, char *nometxt) {
     /* aqui dou print ao contrario visto que a lista esta por ordem crescente de aparecimento de palavras.*/
     if (aux == NULL)
-    return;
+        return;
 
     printdecrescentelista(aux->next, nometxt);
     ///return 1 se esta no contexto, return 0 se não
-    printf("(Byte visto) %ld ",aux->BYTEPOS);
+    printf("Palavra encontrada em byte %ld\n", aux->BYTEPOS);
 
-    /*if (checkcontexto(aux->BYTEPOS, nometxt)){
-        printf("%ld ",aux->BYTEPOS);
-    }*/
+    checkcontexto(aux->BYTEPOS, nometxt);
 }
 
-void palavraesc(struct arvore_binaria *pa, char *nometxt){
-    char palavraescolhida[MAXNOME+1], escritopal[MAXNOME];
-    struct no *encontrado;
-    printf("\nEscolhe uma palavra:\n");
-    while (palavraescolhida != NULL) {
+void listar (struct listaBYTES pf,char *nometxt){
+    struct no_fila *aux = pf.raizlista;
+    while (aux != NULL) {
+        printf("%d", aux->BYTEPOS);
+        checkcontexto(aux->BYTEPOS, nometxt);
+        aux = aux->next;
+    }
+}
 
+void palavraesc(struct arvore_binaria *pa, char *nometxt) {
+    char palavraescolhida[MAXNOME + 1], escritopal[MAXNOME];
+    struct no *encontrado;
+
+    while (palavraescolhida != NULL) {
+        printf("\nEscolhe uma palavra:\n");
         if ((get_one_line(stdin, escritopal, MAXNOME + 1) == EOF))
             break;
         strcpy(palavraescolhida, escritopal);
         encontrado = find(pa->raiz, palavraescolhida);
 
         if (encontrado != NULL) {
-            //printf("Palavra escolhida: %s\n", encontrado->palinfo.pal);
+            printf("Palavra escolhida: %s\n", encontrado->palinfo.pal);
 
-            printf("Posições: ");
+            printf("Contexto:\n");
             printdecrescentelista(encontrado->palinfo.nolistabytes.raizlista, nometxt);
+            //listar(encontrado->palinfo.nolistabytes, nometxt);
             printf("\n");
         } else {
             fprintf(stderr, "Palavra não encontrada na árvore. Tenta de novo:\n");
@@ -433,15 +476,15 @@ void palavraesc(struct arvore_binaria *pa, char *nometxt){
     }
 }
 
-void gamaesc(struct arvore_binaria *pa){
-    char palavraescolhida[MAXNOME+1], escritopal[MAXNOME], gamapal[MAXNOME+1], nomeutf8[MAXNOME+1];
+void gamaesc(struct arvore_binaria *pa) {
+    char palavraescolhida[MAXNOME + 1], escritopal[MAXNOME], gamapal[MAXNOME + 1], nomeutf8[MAXNOME + 1];
     int gamalen, encontrei;
     struct structpal palBytes;
     struct no *p;
     struct no_fila *aux;
 
 
-    while (escritopal!=NULL) {
+    while (escritopal != NULL) {
         printf("\nEscolhe uma gama de letras:\n");
         if ((get_one_line(stdin, escritopal, MAXNOME + 1) == EOF))
             break;
@@ -451,25 +494,25 @@ void gamaesc(struct arvore_binaria *pa){
         //printf("%d",pa);
         while (seguinte(pa, &palBytes)) {
             strtobase_u8(nomeutf8, palBytes.pal);
-            strncpy(gamapal,nomeutf8, gamalen);
-            gamapal[gamalen]=0; //adicionar o \0 final.
+            strncpy(gamapal, nomeutf8, gamalen);
+            gamapal[gamalen] = 0; //adicionar o \0 final.
             //printf("gamnapal: %s|||palesc: %s\n", gamapal,palavraescolhida);
 
             p = find(pa->raiz, palBytes.pal);
-            if(strcmp(gamapal,palavraescolhida)==0){
-                encontrei=1;
-                printf("%s ",palBytes.pal);
+            if (strcmp(gamapal, palavraescolhida) == 0) {
+                encontrei = 1;
+                printf("%s ", palBytes.pal);
                 aux = p->palinfo.nolistabytes.raizlista;
                 printf("%ld\n", aux->BYTEPOS);
-                while(aux->next != NULL){
+                while (aux->next != NULL) {
                     aux = aux->next;
-                    printf("%s ",palBytes.pal);
+                    printf("%s ", palBytes.pal);
                     printf("%ld\n", aux->BYTEPOS);
 
                 }
             }
         }
-        if(!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.");
+        if (!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.");
         memset(&palBytes, 0, sizeof(palBytes));
         encontrei = 0;
     }
@@ -477,7 +520,7 @@ void gamaesc(struct arvore_binaria *pa){
 
 void pediraouser(struct arvore_binaria *pa, char *nometxt) {
     //esta função vai conter o que o user pode/quer fazer
-    char escrito[MAXNOME+1], Bytes[MAXNOME+1], opcaoescolhida[MAXNOME+1];
+    char escrito[MAXNOME + 1], opcaoescolhida[MAXNOME + 1];
 
     printf("Queres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra? (selecionar \"palavra\")\n");
     //todo: o user tambem pode querer em vez de escolher palavras, pode so querer gama de letras.
@@ -486,19 +529,17 @@ void pediraouser(struct arvore_binaria *pa, char *nometxt) {
         if ((get_one_line(stdin, escrito, MAXNOME + 1) == EOF))
             break;
         strcpy(opcaoescolhida, escrito);
-        if(opcaoescolhida!= NULL) {
+        if (opcaoescolhida != NULL) {
 
-            if(strcoll(opcaoescolhida, "gama")==0){
-                printf("Selecionaste, escolher gama de letras.");
+            if (strcoll(opcaoescolhida, "gama") == 0) {
+                printf("Selecionaste, escolher gama de letras.\n");
                 gamaesc(pa);
                 break;
-            }
-            else if(strcoll(opcaoescolhida,"palavra")==0){
-                printf("Selecionaste, escolher uma palavra.");
-                palavraesc(pa,nometxt);
+            } else if (strcoll(opcaoescolhida, "palavra") == 0) {
+                printf("Selecionaste, escolher uma palavra.\n");
+                palavraesc(pa, nometxt);
                 break;
-            }
-            else {
+            } else {
                 fprintf(stderr, "Opção inválida. Tenta de novo:\n");
             }
             *opcaoescolhida = '\0';

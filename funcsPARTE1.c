@@ -129,20 +129,20 @@ int checkchar(char c) {
     for (int j = 0; j < 42; ++j) {
         if (sep[j] == c)
         {
-            fprintf(stdout, "hey found [%c]\n",c);
+            //fprintf(stdout, "hey found [%c]\n",c);
             return 1;
         }
     }
     return 0;
 }
 
-void writestuct(FILE *fich2,char *palavra, int bytes){
+void writestuct(FILE *fich,char *palavra, int bytes){
     struct structpal node;
 
     if(strlen_u8(palavra) > 3) { //global word lenght check
         node = createNODE(palavra, bytes);
-        fwrite(&node, sizeof(struct structpal), 1,fich2);
-        fseek(fich2, 0, SEEK_END);
+        fwrite(&node, sizeof(struct structpal), 1,fich);
+        fseek(fich, 0, SEEK_END);
         if(fwrite != 0)
             fprintf(stdout, "Escrevi NÓ: [pal:%s | bytepos:%ld]\n",node.pal,node.bytespos);
     }
@@ -197,7 +197,7 @@ void lerficheiro(int argc, char *argv[], char *nome_fich2) {
     //usar a função do stor para ver os characteres reais do utf-8
     while (fgets_c_u8(&c,1,fich) != NULL) {
         currentbytes = numerodebytesnumchar((unsigned char)c);
-        // ? printf("CHAR- %c  BYTES- %d",c,currentbytes);
+        //printf("CHAR- %c  BYTES- %d\n",c,currentbytes);
         bytes += currentbytes;
 
         if (checkchar(c)){
@@ -209,11 +209,8 @@ void lerficheiro(int argc, char *argv[], char *nome_fich2) {
             strcat(palavra, &c);
             // ? fprintf(stdout, "pal:[%s] bytes:[%d] len %d\n",palavra,bytes,strlen_u8(palavra));
         }
-
     }
     writestuct(fich2,palavra,bytes); //para a ultima palavra
     fclose(fich);
     fclose(fich2);
-
-
 }

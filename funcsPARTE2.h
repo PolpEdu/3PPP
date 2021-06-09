@@ -1,7 +1,7 @@
 #include "stdbool.h"
 
 #define MAXNOME 50
-
+#define MAXFRASELEN 400
 #ifndef PPPTRABALHO3_FUNCSPARTE2_H
 #define PPPTRABALHO3_FUNCSPARTE2_H
 
@@ -14,11 +14,11 @@ typedef struct structpalreadbin {
 
 struct no_fila {
     long int BYTEPOS;
-    struct no_fila *next;
+    struct no_fila * next;
 };
 
 struct listaBYTES {
-    struct no_fila *raizlista;
+    struct no_fila * raizlista;
 };
 
 //esta struct pal vai ser um nó de uma arvore.
