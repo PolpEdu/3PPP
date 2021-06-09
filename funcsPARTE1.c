@@ -107,7 +107,7 @@ void readfile(char *nome_fich2) {
     {
 
         fread(&noderead, sizeof(struct structpal),1,fich2B);
-        fprintf(stdout,"Li Nó: [%s] bytepos:[%d]\n", noderead.pal, noderead.bytespos);
+        fprintf(stdout,"Li Nó: [%s] | bytepos:[%d]\n", noderead.pal, noderead.bytespos);
         memset(&noderead, 0, sizeof(noderead));
         //printf("%d", ftell(fich2B));
     }
@@ -125,11 +125,11 @@ struct structpal createNODE(char *word, int currentbytes){
 }
 
 int checkchar(char c) {
-    char sep[36] = " 0123456789/()[]{}?!#$%&=+*.,-_'\"\n\r\0";
-    for (int j = 0; j < 34; ++j) {
+    char sep[42] = " 0123456789/()[]{}?!#$%&=+*:\\;.,-\"\'_'\r\n\0\t\v";
+    for (int j = 0; j < 42; ++j) {
         if (sep[j] == c)
         {
-            // ? fprintf(stdout, "hey found [%c]\n",c);
+            fprintf(stdout, "hey found [%c]\n",c);
             return 1;
         }
     }
@@ -144,7 +144,7 @@ void writestuct(FILE *fich2,char *palavra, int bytes){
         fwrite(&node, sizeof(struct structpal), 1,fich2);
         fseek(fich2, 0, SEEK_END);
         if(fwrite != 0)
-            fprintf(stdout, "Escrevi NÓ: [pal:%s bytepos:%ld]\n",node.pal,node.bytespos);
+            fprintf(stdout, "Escrevi NÓ: [pal:%s | bytepos:%ld]\n",node.pal,node.bytespos);
     }
 
     memset(&node, 0, sizeof(node));

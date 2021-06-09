@@ -190,9 +190,7 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
         return false;
     }
 
-
     //construir novo nó da filai
-
     aux->BYTEPOS = numero;
     aux->next = NULL;
 
@@ -480,8 +478,6 @@ void gamaesc(struct arvore_binaria *pa){
 void pediraouser(struct arvore_binaria *pa, char *nometxt) {
     //esta função vai conter o que o user pode/quer fazer
     char escrito[MAXNOME+1], Bytes[MAXNOME+1], opcaoescolhida[MAXNOME+1];
-
-
 
     printf("Queres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra? (selecionar \"palavra\")\n");
     //todo: o user tambem pode querer em vez de escolher palavras, pode so querer gama de letras.
