@@ -341,21 +341,35 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
 
     fclose(fich2B);
 }
-
-
-void checkcontexto(long int bytepal, char *nometxt) {
-    /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
-    int bytes, currentbytes,pontosfinais[MAXNOME*2];
-    char fraseant[MAXFRASELEN +1] = "";
-    char frasemeio[MAXFRASELEN + 1] = "";
-    char frasepos[MAXFRASELEN + 1] = "";
-    char pedacotresfrases[(MAXFRASELEN+1)*3] = "";
+void pontosfinaisgenerator(FILE *fichread, int *pontosfinais){
+    int bytes, currentbytes;
     char c;
-
     //inicializar a minha array que vai conter todos os pontos finais
     for (int i = 0; i < MAXNOME*2; ++i) {
         pontosfinais[i] = 0;
     }
+    //todo: talvez mudar para mallocs
+
+    int i =0;
+    while (fgets_c_u8(&c, 1, fichread) != NULL) {
+        currentbytes = numerodebytesnumchar((unsigned char) c);
+        bytes += currentbytes;
+        //Find pontos todos os pontos finais.
+        if('.'==c){
+            //printf("\n%d\n", bytes);
+            pontosfinais[i] = bytes;
+            i++;
+        }
+        //printf("%s",&c);
+    }
+}
+
+void checkcontexto(long int bytepal, char *nometxt) {
+    /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
+    int bytes, currentbytes,pontosfinais[MAXNOME*2];
+    char c;
+
+
 
     FILE *fichread = NULL;
     //Abrir um ficheiro para ler do contexto.
@@ -372,18 +386,7 @@ void checkcontexto(long int bytepal, char *nometxt) {
         }
     }
 
-    int i =0;
-    while (fgets_c_u8(&c, 1, fichread) != NULL) {
-        currentbytes = numerodebytesnumchar((unsigned char) c);
-        bytes += currentbytes;
-        //Find pontos todos os pontos finais.
-        if('.'==c){
-            //printf("\n%d\n", bytes);
-            pontosfinais[i] = bytes;
-            i++;
-        }
-        //printf("%s",&c);
-    }
+    pontosfinaisgenerator(fichread,pontosfinais);
 
     //tenho todos os pontos finais.
     int frasetotinicio;
@@ -396,36 +399,36 @@ void checkcontexto(long int bytepal, char *nometxt) {
         }
         if((pontosfinais[j-1]< bytepal) && (bytepal< pontosfinais[j])) {
             frasetotinicio = pontosfinais[j-2];
-            frasetotfinal = pontosfinais [j];
+            frasetotfinal = pontosfinais [j+1];
         }
     }
     //segundo loop para ter a frase.
     bytes =0;
     fseek(fichread, 0, SEEK_SET); //voltar para o inicio.
+    printf("\nFrase Anterior: \n");
+
+    int frases = 0;
     while (fgets_c_u8(&c, 1, fichread) != NULL) {
         currentbytes = numerodebytesnumchar((unsigned char) c);
         bytes += currentbytes;
         //Find pontos todos os pontos finais.
         if(bytes>frasetotinicio && frasetotfinal>=bytes){
             printf("%s",&c);
-            strcat(pedacotresfrases, &c);
+            if('.'==c){
+                ++frases;
+                switch (frases) {
+                    case 1:
+                        printf("\nFrase da Palavra: ");
+                        break;
+                    case 2:
+                        printf("\nFrase Posterior: ");
+                        break;
+                }
+            }
         }
-        //printf("%s",&c);
     }
-    printf("PEDAÇO:\n%s\n", pedacotresfrases);
-
-
-    char *token;
-    //so falta seprar o pedaço das tres frases:
-    token = strtok(pedacotresfrases,".");
-    while (token != NULL){
-        printf("%s\n", token);
-        token= strtok(NULL,".");
-    }
-    memset(&token, 0, sizeof(token));
-
-
-    //fprintf(stdout, "Frase anterior: %s \nFrase posterior: %s\n",fraseant,frasepos);
+    frases = 0;
+    printf("\n--------\n");
     fclose(fichread);
 }
 
@@ -465,7 +468,6 @@ void palavraesc(struct arvore_binaria *pa, char *nometxt) {
         if (encontrado != NULL) {
             printf("Palavra escolhida: %s\n", encontrado->palinfo.pal);
 
-            printf("Contexto:\n");
             printdecrescentelista(encontrado->palinfo.nolistabytes.raizlista, nometxt);
             //listar(encontrado->palinfo.nolistabytes, nometxt);
             printf("\n");
