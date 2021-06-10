@@ -17,7 +17,6 @@ bool seguinte(struct arvore_binaria *pa, struct structpal *ppinfo);
 
 struct no *find(struct no *pr, char *pn);
 
-void mostrar_tudo(struct arvore_binaria *pa);
 
 static char acentuadas[][8] =
         {"á", "Á", "à", "À", "ã", "Ã", "â", "Â", "ä", "Ä", "ç", "Ç",
@@ -69,23 +68,26 @@ const char *getfileext(const char *nome) {
 
 void getname(char *nome_fich) {
     FILE *fich = NULL;
-    char extension[3];
+    char extension[3]; //tamanho da extensão
     printf("\nPor favor insere o nome do ficheiro:\n");
     // pedir nome do ficheiro que contém os dados
     while (fich == NULL) {
+        //ate ter o ficheiro
         if ((get_one_line(stdin, nome_fich, MAXNOME + 1) == EOF))
             break;
+        //não encontrei
         if ((fich = fopen(nome_fich, "r")) == NULL) {
             fprintf(stderr, "Ficheiro não existe. Tenta de novo:\n");
         } else {
+            //tiro a a extensão do nome e vejo se ela é do tipo binario.
             strcpy(extension, getfileext(nome_fich));
-            if (!strcmp(extension, "bin") == 0) {
+            if (strcmp(extension, "bin") != 0) {
                 fprintf(stderr, "O ficheiro não tem o formato valido para ler neste exercício, tenta outra vez:\n");
                 fich = NULL;
             }
         }
     }
-    ///printf("%s",nome_fich);
+    printf("\nFicheiro escolhido: %s\n",nome_fich);
 }
 
 static int comp_mchar(const char *um, const char *outro) {
@@ -143,7 +145,7 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
     struct no_fila *aux = NULL, *prox;
 
     //Obter espaço para um novo nó
-    aux = (struct no_fila *) malloc(sizeof(struct no_fila) * MAXNOME / 2);
+    aux = (struct no_fila *) malloc(sizeof(struct no_fila)*25);
     //printf("%d\n",aux);
     if (aux == NULL) {
         return false;
@@ -283,14 +285,10 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
         fread(&nolido, sizeof(struct structpalreadbin), 1, fich2B);
         fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
 
-
         if (!colocar(pa, nolido)) {
             printf("Não há espaço para inserir\n");
             break;
         }
-
-
-        memset(&nolido, 0, sizeof(nolido));
         //printf("%d", ftell(fich2B));
     }
 
@@ -310,9 +308,8 @@ int checkchar(char c) {
 
 void safereturn(FILE *fichread){
     //acabei de escrever as frases.
-    printf("\n\n");
+    printf("\n");
     fclose(fichread);
-    return;
 }
 
 void checkcontexto(long int bytepal, char *nometxt) {
@@ -326,29 +323,29 @@ void checkcontexto(long int bytepal, char *nometxt) {
     } else {
         //printf("%s\n", nometxt);
         strcpy(extension, getfileext(nometxt));
-        if (!(strcmp(extension, "txt") == 0)) {
+        if (strcmp(extension, "txt") != 0) {
             fprintf(stderr, "O ficheiro não tem o formato valido para ser lido de modo a ver o contexto.\n");
             fichread = NULL;
 
         }
     }
-    int pontosfinaisant = 0, c,  pos;
+    int nrpontosfinais = 0, c,  pos;
 
     fseek(fichread, bytepal, SEEK_SET);
 
-    /// SO DOU PRINT PARA A FRENTE SE pontosfinaisant = 2.
+    /// SO DOU PRINT PARA A FRENTE SE nrpontosfinais = 2.
     while ((c = fgetc(fichread)) != EOF) {
         pos = ftell(fichread);
 
         //check por ponto final
         if (c == 46) {
             //se tenho adiciono um ponto final adiciono um à contagem
-            pontosfinaisant++;
-            //printf("|%d|",pontosfinaisant);
+            nrpontosfinais++;
+            //printf("|%d|",nrpontosfinais);
         } else if (c == '\n') {
             //ignoro os paragrafos
 
-            if (pontosfinaisant<2){ //se tiver menos de dois pontos finais estou a andar para tras portanto salto 3 bytes para tras
+            if (nrpontosfinais<2){ //se tiver menos de dois pontos finais estou a andar para tras portanto salto 3 bytes para tras
                 //saltar 3 bytes para tras (2 do paragrafo e 1 do que avança normalmente)
                 fseek(fichread, pos - 3, SEEK_SET);
 
@@ -357,16 +354,16 @@ void checkcontexto(long int bytepal, char *nometxt) {
             continue;
         }
 
-        if (pontosfinaisant >= 2) {
+        if (nrpontosfinais >= 2) { //passei por dois pontos finais. Agora quero andar para a frente e "varrer" as frases.
             ///Estou a andar em frente pelo texto.
 
-            if(pontosfinaisant != 2) //não me interessa escrever o ponto final da frase anterior:
+            if(nrpontosfinais != 2) //não me interessa escrever o ponto final da frase anterior:
                 printf("%c", c);
 
             if (c == 46) {
-                pontosfinaisant++;
+                nrpontosfinais++;
                 //para so escrever até a frase com ponto final 7 e não mais.
-                if(pontosfinaisant>8)
+                if(nrpontosfinais>8)
                 {
                     //acabei de escrever as frases.
                     safereturn(fichread);
@@ -374,7 +371,7 @@ void checkcontexto(long int bytepal, char *nometxt) {
                 }
                 //printf("|CCPP|");
 
-                switch (pontosfinaisant) {
+                switch (nrpontosfinais) {
                     case 3:
                         printf("Frase Anterior:");
                         break;
@@ -383,6 +380,8 @@ void checkcontexto(long int bytepal, char *nometxt) {
                         break;
                     case 7:
                         printf("\nFrase Posterior:");
+                        break;
+                    default:
                         break;
                 }
                 //preciso de voltar a ver se tem espaços ou outros characteres que não sejam palavras à frente do ponto final.
@@ -397,7 +396,7 @@ void checkcontexto(long int bytepal, char *nometxt) {
                 //estou no inicio do texto
                 printf("Frase Anterior:");
                 printf("\nFrase da palavra:");
-                pontosfinaisant = 5; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
+                nrpontosfinais = 5; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
             }
             else {
                 fseek(fichread, pos - 2, SEEK_SET);
@@ -417,7 +416,7 @@ void printdecrescentelista(struct no_fila *aux, char *nometxt) {
 
     printdecrescentelista(aux->next, nometxt);
     ///return 1 se esta no contexto, return 0 se não
-    printf("Palavra encontrada em byte %ld\n", aux->BYTEPOS);
+    printf("\nPalavra econtrada no byte %ld\nContexto:\n\n", aux->BYTEPOS);
 
     checkcontexto(aux->BYTEPOS, nometxt);
 }
@@ -434,7 +433,7 @@ void palavraesc(struct arvore_binaria *pa, char *nometxt) {
         encontrado = find(pa->raiz, palavraescolhida);
 
         if (encontrado != NULL) {
-            printf("Palavra escolhida: %s\n", encontrado->palinfo.pal);
+            printf("Palavra escolhida: %s\n\n", encontrado->palinfo.pal);
 
             printdecrescentelista(encontrado->palinfo.nolistabytes.raizlista, nometxt);
             //listar(encontrado->palinfo.nolistabytes, nometxt);
@@ -482,7 +481,7 @@ void gamaesc(struct arvore_binaria *pa) {
                 }
             }
         }
-        if (!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.");
+        if (!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.\n");
         memset(&palBytes, 0, sizeof(palBytes));
         encontrei = 0;
     }
@@ -490,29 +489,29 @@ void gamaesc(struct arvore_binaria *pa) {
 
 void pediraouser(struct arvore_binaria *pa, char *nometxt) {
     //esta função vai conter o que o user pode/quer fazer
-    char escrito[MAXNOME + 1], opcaoescolhida[MAXNOME + 1];
+    char escrito[MAXNOME + 1], opcaoescolhida[MAXNOME + 1], op[MAXNOME + 1];
 
-    printf("Queres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra? (selecionar \"palavra\")\n");
+    printf("\nQueres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra(selecionar \"palavra\") ?\n");
 
     while (opcaoescolhida != NULL) {
         if ((get_one_line(stdin, escrito, MAXNOME + 1) == EOF))
             break;
         strcpy(opcaoescolhida, escrito);
-        if (opcaoescolhida != NULL) {
+        strtobase_u8(op, opcaoescolhida);
 
-            if (strcoll(opcaoescolhida, "gama") == 0) {
-                printf("Selecionaste, escolher gama de letras.\n");
-                gamaesc(pa);
-                break;
-            } else if (strcoll(opcaoescolhida, "palavra") == 0) {
-                printf("Selecionaste, escolher uma palavra.\n");
-                palavraesc(pa, nometxt);
-                break;
-            } else {
-                fprintf(stderr, "Opção inválida. Tenta de novo:\n");
-            }
-            *opcaoescolhida = '\0';
+        if (strcoll(op, "gama") == 0) {
+            printf("Selecionaste, escolher gama de letras.\n");
+            gamaesc(pa);
+            break;
+        } else if (strcoll(op, "palavra") == 0) {
+            printf("Selecionaste, escolher uma palavra.\n");
+            palavraesc(pa, nometxt);
+            break;
+        } else {
+            fprintf(stderr, "Opção inválida. Tenta de novo:\n");
         }
+        *opcaoescolhida = '\0';
+
     }
 
 }
