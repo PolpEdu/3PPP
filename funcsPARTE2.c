@@ -283,7 +283,7 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
     while (ftell(fich2B) != n) //enquanto não estamos no final.
     {
         fread(&nolido, sizeof(struct structpalreadbin), 1, fich2B);
-        fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
+        // ? teste fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
 
         if (!colocar(pa, nolido)) {
             printf("Não há espaço para inserir\n");
@@ -296,8 +296,8 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
 }
 
 int checkchar(char c) {
-    char sep[42] = " 0123456789/()[]{}?!#$%&=+*:\\;.,-\"\'_'\r\n\0\t\v";
-    for (int j = 0; j < 42; ++j) {
+    char sep[32] = " /()[]{}?!#$%&=+*:\\;.,-\"\'_'\r\n\0\t\v"; //chars separadores
+    for (int j = 0; j < 32; ++j) {
         if (sep[j] == c) {
             //fprintf(stdout, "hey found [%c]\n",c);
             return 1;
@@ -331,24 +331,23 @@ void checkcontexto(long int bytepal, char *nometxt) {
     }
     int nrpontosfinais = 0, c,  pos;
 
-    fseek(fichread, bytepal, SEEK_SET);
+    fseek(fichread, bytepal-1, SEEK_SET); ///tirar um porque vou a seguir adicionar um
 
     /// SO DOU PRINT PARA A FRENTE SE nrpontosfinais = 2.
     while ((c = fgetc(fichread)) != EOF) {
         pos = ftell(fichread);
-
+        //printf("|%d|",pos);
         //check por ponto final
         if (c == 46) {
             //se tenho adiciono um ponto final adiciono um à contagem
             nrpontosfinais++;
-            //printf("|%d|",nrpontosfinais);
+            //printf("|PF:%d|",nrpontosfinais);
         } else if (c == '\n') {
             //ignoro os paragrafos
 
             if (nrpontosfinais<2){ //se tiver menos de dois pontos finais estou a andar para tras portanto salto 3 bytes para tras
                 //saltar 3 bytes para tras (2 do paragrafo e 1 do que avança normalmente)
                 fseek(fichread, pos - 3, SEEK_SET);
-
             }
             //não quero contar o paragrafo quando estou a andar para a frente
             continue;
@@ -387,19 +386,27 @@ void checkcontexto(long int bytepal, char *nometxt) {
                 //preciso de voltar a ver se tem espaços ou outros characteres que não sejam palavras à frente do ponto final.
             }
         } else {
-            //printf("seek?");
             ///Estou a andar em sentido contrario pelo texto.
-            if(pos-1<=0){ //se o byte que estou a ver for o primeiro
+            if((pos-1<=0)&&nrpontosfinais ==0){ //se o byte que estou a ver for o primeiro e não tiver passados pontos finais
+                ///caso da primeira palavra estar na primeira frase
                 //caso vá saltar para tras da posição 0, quero começar a dar print para a frente, se estiver no inicio.
                 fseek(fichread, -1, SEEK_CUR); //desde o inicio -1 porque o fgets já conta 1 por si, de modo a ficar na posição 0
 
                 //estou no inicio do texto
                 printf("Frase Anterior:");
                 printf("\nFrase da palavra:");
-                nrpontosfinais = 5; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
+                nrpontosfinais = 5; //5 porque so quero escrever a frase da palavra e a proxima
+            }
+            else if((pos-1<=0)&&nrpontosfinais ==1){ //se o byte que estou a ver for o primeiro e tiver passado 1 ponto final
+                ///Caso da palavra estar na segunda frase e sair para fora
+                fseek(fichread, -1, SEEK_CUR);
+                //estou no inicio do texto
+                printf("Frase Anterior:");
+                nrpontosfinais = 3; //3 porque ainda quero escrever a frase anterior, a da palavra e a proxima
             }
             else {
-                fseek(fichread, pos - 2, SEEK_SET);
+                ///Caso geral das palavras no meio do texto.
+                fseek(fichread, pos - 2, SEEK_SET); //ando 1 para tras
             }
         }
     }
@@ -411,14 +418,12 @@ void checkcontexto(long int bytepal, char *nometxt) {
 
 void printdecrescentelista(struct no_fila *aux, char *nometxt) {
     /* aqui dou print ao contrario visto que a lista esta por ordem crescente de aparecimento de palavras.*/
-    if (aux == NULL)
-        return;
+    if (aux == NULL) return; //cheguei ao final da arvore.
 
-    printdecrescentelista(aux->next, nometxt);
-    ///return 1 se esta no contexto, return 0 se não
+    printdecrescentelista(aux->next, nometxt); //chamo outra vez a função com o proximo ramo como parametro
+
     printf("\nPalavra econtrada no byte %ld\nContexto:\n\n", aux->BYTEPOS);
-
-    checkcontexto(aux->BYTEPOS, nometxt);
+    checkcontexto(aux->BYTEPOS, nometxt); //vou ver do contexto da palavra
 }
 
 void palavraesc(struct arvore_binaria *pa, char *nometxt) {
@@ -434,14 +439,12 @@ void palavraesc(struct arvore_binaria *pa, char *nometxt) {
 
         if (encontrado != NULL) {
             printf("Palavra escolhida: %s\n\n", encontrado->palinfo.pal);
-
-            printdecrescentelista(encontrado->palinfo.nolistabytes.raizlista, nometxt);
-            //listar(encontrado->palinfo.nolistabytes, nometxt);
+            printdecrescentelista(encontrado->palinfo.nolistabytes.raizlista, nometxt); //quero dar print decrescente visto que econtrei a palavra.
             printf("\n");
         } else {
             fprintf(stderr, "Palavra não encontrada na árvore. Tenta de novo:\n");
         }
-        *palavraescolhida = '\0';
+        *palavraescolhida = '\0'; //reset na variavel palavra escolhida para fazer o loop
     }
 }
 
@@ -461,12 +464,12 @@ void gamaesc(struct arvore_binaria *pa) {
         gamalen = strlen(palavraescolhida);
 
         //printf("%d",pa);
-        while (seguinte(pa, &palBytes)) {
+        while (seguinte(pa, &palBytes)) { //loop pela arvore
             strtobase_u8(nomeutf8, palBytes.pal);
-            strncpy(gamapal, nomeutf8, gamalen);
+            strncpy(gamapal, nomeutf8, gamalen); //reduzo a palavra a uma gama
             gamapal[gamalen] = 0; //adicionar o \0 final.
-            //printf("gamnapal: %s|||palesc: %s\n", gamapal,palavraescolhida);
 
+            //printf("gamnapal: %s|||palesc: %s\n", gamapal,palavraescolhida);
             p = find(pa->raiz, palBytes.pal);
             if (strcmp(gamapal, palavraescolhida) == 0) {
                 encontrei = 1;
@@ -482,37 +485,31 @@ void gamaesc(struct arvore_binaria *pa) {
             }
         }
         if (!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.\n");
-        memset(&palBytes, 0, sizeof(palBytes));
-        encontrei = 0;
+        memset(&palBytes, 0, sizeof(palBytes)); //dou reset à palBytes para evitar erros.
+        encontrei = 0; //dou reset à variavel encontrei
     }
 }
 
 void pediraouser(struct arvore_binaria *pa, char *nometxt) {
-    //esta função vai conter o que o user pode/quer fazer
     char escrito[MAXNOME + 1], opcaoescolhida[MAXNOME + 1], op[MAXNOME + 1];
-
     printf("\nQueres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra(selecionar \"palavra\") ?\n");
 
     while (opcaoescolhida != NULL) {
         if ((get_one_line(stdin, escrito, MAXNOME + 1) == EOF))
             break;
-        strcpy(opcaoescolhida, escrito);
+        strcpy(opcaoescolhida, escrito); //copia o que escrevi para uma nova string
         strtobase_u8(op, opcaoescolhida);
-
-        if (strcoll(op, "gama") == 0) {
+        if (strcoll(op, "gama") == 0) { //selecionei gama
             printf("Selecionaste, escolher gama de letras.\n");
-            gamaesc(pa);
+            gamaesc(pa); //a função vai dar TODAS as palavras que começam por o conjunto de letras (a gama de letras) selecionada.
             break;
         } else if (strcoll(op, "palavra") == 0) {
             printf("Selecionaste, escolher uma palavra.\n");
-            palavraesc(pa, nometxt);
-            break;
-        } else {
-            fprintf(stderr, "Opção inválida. Tenta de novo:\n");
+            palavraesc(pa, nometxt);  //a função vai dar a palavra n arvoree com o seu contexto
+            break; //selecionei palavra
         }
-        *opcaoescolhida = '\0';
-
+        fprintf(stderr, "Opção inválida. Tenta de novo:\n");
+        *opcaoescolhida = '\0'; //faço com que a opção escolhida seja NULL para voltar a fazer o loop
     }
-
 }
 
