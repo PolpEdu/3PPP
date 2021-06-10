@@ -158,17 +158,12 @@ void lerficheiro(int argc, char *argv[], char *nome_fich2) {
 
         if (checkchar(c) && letra){
             //tenho um espaço e o char anterior foi uma letra, meter mais chars
-
             writestuct(fich2,palavra,soma- strlen(palavra)); //bytes-wordsize(palavra)-1 para ser o inicio da palavra.
             letra = false;
         }
         else if (!checkchar(c)){
             char ch= (char)c;
-            //strcat(palavra->letras , c);
-            //printf("%c", ch);
             strncat(palavra, &ch, 1);
-            //fprintf(fchegada, "%c", c);
-            //printf("%c", c);
             letra = true;
         }
         soma++;

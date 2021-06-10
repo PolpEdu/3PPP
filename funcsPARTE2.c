@@ -317,14 +317,25 @@ void checkcontexto(long int bytepal, char *nometxt) {
     }
     //Todo: fazer fseek para tras ate encontrar dois pontos finais. em vez de anota
     int c;
-    int pontosfinais =0;
+    int pontosfinaisant =1;
+    fseek(fichread,bytepal,SEEK_SET);
     while ((c= fgetc(fichread)) != EOF) {
-        fseek(fichread,0,SEEK_CUR-1);
-        //Find pontos todos os pontos finais.
-        if('.'==c){
-            //printf("\n%d\n", bytes);
+        char ch= (char)c;
+        int pos = ftell(fichread);
+        fseek(fichread,pos-2,SEEK_SET);
 
-            pontosfinais++;
+        printf("%d", ftell(fichread));
+        printf("%c", &ch);
+
+        //Find pontos todos os pontos finais.
+        if('.'==ch){
+            printf("HEYYYYY\n");
+            if (pontosfinaisant == 2){
+                printf("%c",&ch);
+            }
+            else
+                pontosfinaisant++;
+            printf("PTFINALS: %d",pontosfinaisant);
         }
         //printf("%s",&c);
     }
