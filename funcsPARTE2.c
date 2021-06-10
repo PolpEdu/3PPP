@@ -308,6 +308,12 @@ int checkchar(char c) {
     return 0;
 }
 
+void safereturn(FILE *fichread){
+    //acabei de escrever as frases.
+    printf("\n\n");
+    fclose(fichread);
+    return;
+}
 
 void checkcontexto(long int bytepal, char *nometxt) {
     /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
@@ -326,53 +332,81 @@ void checkcontexto(long int bytepal, char *nometxt) {
 
         }
     }
-    int pontosfinaisant = 0, c, checkfirstword = 1, pos;
+    int pontosfinaisant = 0, c,  pos;
 
     fseek(fichread, bytepal, SEEK_SET);
+
+    /// SO DOU PRINT PARA A FRENTE SE pontosfinaisant = 2.
     //todo a segunda palavra nao funciona, só a primeira por alguma razão.
     while ((c = fgetc(fichread)) != EOF) {
         pos = ftell(fichread);
-        //printf("%d",pos);
+
+        //check por ponto final
         if (c == 46) {
+            //se tenho adiciono
             pontosfinaisant++;
-            //printf("\npontofinal\n");
+            //printf("|%d|",pontosfinaisant);
         } else if (c == '\n') {
-            //ignore paragraphs
+            //ignoro os paragrafos
+            //printf("fp\n");
+
+            if (pontosfinaisant<2){ //se tiver menos de dois pontos finais estou a andar para tras portanto salto 3 bytes para tras
+                //saltar 3 bytes para tras (2 do paragrafo e 1 do que avança normalmente)
+                fseek(fichread, pos - 3, SEEK_SET);
+
+            }
+            //não quero contar o paragrafo quando estou a andar para a frente
             continue;
         }
 
-        if (pontosfinaisant >= 2) {
-            if (!checkchar(c))
-                checkfirstword = 0;
 
-            if (!checkfirstword) {
+        if (pontosfinaisant >= 2) {
+            ///Estou a andar em frente pelo texto.
+
+            if(pontosfinaisant != 2) //não me interessa escrever o ponto final da frase anterior:
                 printf("%c", c);
-            }
             if (c == 46) {
                 pontosfinaisant++;
-                //printf("|%d|",pontosfinaisant);
+                //para so escrever até a frase com ponto final 7 e não mais.
+                if(pontosfinaisant>8)
+                {
+                    //acabei de escrever as frases.
+                    safereturn(fichread);
+                    return;
+                }
+                //printf("|CCPP|");
                 switch (pontosfinaisant) {
                     case 3:
-                        printf("Frase Anterior: ");
+                        printf("Frase Anterior:");
                         break;
                     case 5:
-                        printf("\nFrase da palavra: ");
+                        printf("\nFrase da palavra:");
                         break;
                     case 7:
-                        printf("\nFrase Posterior: ");
+                        printf("\nFrase Posterior:");
                         break;
                 }
                 //preciso de voltar a ver se tem espaços ou outros characteres que não sejam palavras à frente do ponto final.
-                checkfirstword = 1;
             }
         } else {
             //printf("seek?");
-            fseek(fichread, pos - 2, SEEK_SET);
+            ///Estou a andar em sentido contrario pelo texto.
+            if(pos-1<=0){ //se o byte que estou a ver for o primeiro
+                //caso vá saltar para tras da posição 0, quero começar a dar print para a frente, se estiver no inicio.
+                fseek(fichread, -1, SEEK_CUR); //desde o inicio -1 porque o fgets já conta 1 por si, de modo a ficar na posição 0
+
+                //estou no inicio do texto
+                printf("Frase Anterior:");
+                pontosfinaisant = 3; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
+            }
+            else {
+                fseek(fichread, pos - 2, SEEK_SET);
+            }
         }
     }
-    printf("\n\n");
-    memset(&c, 0, sizeof(c));
-    fclose(fichread);
+    //cheguei ao fim do ficheiro paro de qualquer das maneiras.
+    /// Mesmo que não tenha ponto final conto como frase
+    safereturn(fichread);
 }
 
 
@@ -386,15 +420,6 @@ void printdecrescentelista(struct no_fila *aux, char *nometxt) {
     printf("Palavra encontrada em byte %ld\n", aux->BYTEPOS);
 
     checkcontexto(aux->BYTEPOS, nometxt);
-}
-
-void listar(struct listaBYTES pf, char *nometxt) {
-    struct no_fila *aux = pf.raizlista;
-    while (aux != NULL) {
-        printf("%d", aux->BYTEPOS);
-        checkcontexto(aux->BYTEPOS, nometxt);
-        aux = aux->next;
-    }
 }
 
 void palavraesc(struct arvore_binaria *pa, char *nometxt) {
