@@ -337,18 +337,16 @@ void checkcontexto(long int bytepal, char *nometxt) {
     fseek(fichread, bytepal, SEEK_SET);
 
     /// SO DOU PRINT PARA A FRENTE SE pontosfinaisant = 2.
-    //todo a segunda palavra nao funciona, só a primeira por alguma razão.
     while ((c = fgetc(fichread)) != EOF) {
         pos = ftell(fichread);
 
         //check por ponto final
         if (c == 46) {
-            //se tenho adiciono
+            //se tenho adiciono um ponto final adiciono um à contagem
             pontosfinaisant++;
             //printf("|%d|",pontosfinaisant);
         } else if (c == '\n') {
             //ignoro os paragrafos
-            //printf("fp\n");
 
             if (pontosfinaisant<2){ //se tiver menos de dois pontos finais estou a andar para tras portanto salto 3 bytes para tras
                 //saltar 3 bytes para tras (2 do paragrafo e 1 do que avança normalmente)
@@ -359,12 +357,12 @@ void checkcontexto(long int bytepal, char *nometxt) {
             continue;
         }
 
-
         if (pontosfinaisant >= 2) {
             ///Estou a andar em frente pelo texto.
 
             if(pontosfinaisant != 2) //não me interessa escrever o ponto final da frase anterior:
                 printf("%c", c);
+
             if (c == 46) {
                 pontosfinaisant++;
                 //para so escrever até a frase com ponto final 7 e não mais.
@@ -375,6 +373,7 @@ void checkcontexto(long int bytepal, char *nometxt) {
                     return;
                 }
                 //printf("|CCPP|");
+
                 switch (pontosfinaisant) {
                     case 3:
                         printf("Frase Anterior:");
@@ -397,7 +396,8 @@ void checkcontexto(long int bytepal, char *nometxt) {
 
                 //estou no inicio do texto
                 printf("Frase Anterior:");
-                pontosfinaisant = 3; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
+                printf("\nFrase da palavra:");
+                pontosfinaisant = 5; //3 porque ja estou pronto para escrever para a frente e o proximo ponto final vai ser a segunda frase
             }
             else {
                 fseek(fichread, pos - 2, SEEK_SET);
