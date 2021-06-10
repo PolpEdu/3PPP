@@ -31,7 +31,6 @@ static char base[] =
          'u', 'u', 'u', 'u', '\0'};
 
 
-
 //! Get do proximo input linha da consola.
 int get_one_line(FILE *fich, char *linha, int lim) {
     int c, i;
@@ -144,10 +143,9 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
     struct no_fila *aux = NULL, *prox;
 
     //Obter espaço para um novo nó
-    aux = (struct no_fila *) malloc(sizeof(struct no_fila)*MAXNOME/2);
+    aux = (struct no_fila *) malloc(sizeof(struct no_fila) * MAXNOME / 2);
     //printf("%d\n",aux);
-    if (aux == NULL)
-    {
+    if (aux == NULL) {
         return false;
     }
 
@@ -158,13 +156,13 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
 
     //Procurar a posição onde a mensagem deve ficar
     prox = pf->raizlista;
-    if ( pf->raizlista == NULL) {
+    if (pf->raizlista == NULL) {
         // fila vazia, é a primeira mensagem
         pf->raizlista = aux;
 
     } else {
 
-        while (prox->next != NULL){
+        while (prox->next != NULL) {
             prox = prox->next;
         }
         prox->next = aux;
@@ -194,7 +192,7 @@ struct no *addtree(struct no *pr, struct no *p, long int bytes) {
     return pr;
 }
 
-bool colocar(struct arvore_binaria * pa, strctantg palinfodado) {
+bool colocar(struct arvore_binaria *pa, strctantg palinfodado) {
     struct no *p;
 
     p = (struct no *) malloc(sizeof(struct no)); // fazer novo nó com alocação dinâmica
@@ -298,6 +296,19 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
 
     fclose(fich2B);
 }
+
+int checkchar(char c) {
+    char sep[42] = " 0123456789/()[]{}?!#$%&=+*:\\;.,-\"\'_'\r\n\0\t\v";
+    for (int j = 0; j < 42; ++j) {
+        if (sep[j] == c) {
+            //fprintf(stdout, "hey found [%c]\n",c);
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
 void checkcontexto(long int bytepal, char *nometxt) {
     /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
 
@@ -315,32 +326,52 @@ void checkcontexto(long int bytepal, char *nometxt) {
 
         }
     }
-    //Todo: fazer fseek para tras ate encontrar dois pontos finais. em vez de anota
-    int c;
-    int pontosfinaisant =1;
-    fseek(fichread,bytepal,SEEK_SET);
-    while ((c= fgetc(fichread)) != EOF) {
-        char ch= (char)c;
-        int pos = ftell(fichread);
-        fseek(fichread,pos-2,SEEK_SET);
+    int pontosfinaisant = 0, c, checkfirstword = 1, pos;
 
-        printf("%d", ftell(fichread));
-        printf("%c", &ch);
-
-        //Find pontos todos os pontos finais.
-        if('.'==ch){
-            printf("HEYYYYY\n");
-            if (pontosfinaisant == 2){
-                printf("%c",&ch);
-            }
-            else
-                pontosfinaisant++;
-            printf("PTFINALS: %d",pontosfinaisant);
+    fseek(fichread, bytepal, SEEK_SET);
+    //todo a segunda palavra nao funciona, só a primeira por alguma razão.
+    while ((c = fgetc(fichread)) != EOF) {
+        pos = ftell(fichread);
+        //printf("%d",pos);
+        if (c == 46) {
+            pontosfinaisant++;
+            //printf("\npontofinal\n");
+        } else if (c == '\n') {
+            //ignore paragraphs
+            continue;
         }
-        //printf("%s",&c);
-    }
 
-    printf("\n--------\n");
+        if (pontosfinaisant >= 2) {
+            if (!checkchar(c))
+                checkfirstword = 0;
+
+            if (!checkfirstword) {
+                printf("%c", c);
+            }
+            if (c == 46) {
+                pontosfinaisant++;
+                //printf("|%d|",pontosfinaisant);
+                switch (pontosfinaisant) {
+                    case 3:
+                        printf("Frase Anterior: ");
+                        break;
+                    case 5:
+                        printf("\nFrase da palavra: ");
+                        break;
+                    case 7:
+                        printf("\nFrase Posterior: ");
+                        break;
+                }
+                //preciso de voltar a ver se tem espaços ou outros characteres que não sejam palavras à frente do ponto final.
+                checkfirstword = 1;
+            }
+        } else {
+            //printf("seek?");
+            fseek(fichread, pos - 2, SEEK_SET);
+        }
+    }
+    printf("\n\n");
+    memset(&c, 0, sizeof(c));
     fclose(fichread);
 }
 
@@ -357,7 +388,7 @@ void printdecrescentelista(struct no_fila *aux, char *nometxt) {
     checkcontexto(aux->BYTEPOS, nometxt);
 }
 
-void listar (struct listaBYTES pf,char *nometxt){
+void listar(struct listaBYTES pf, char *nometxt) {
     struct no_fila *aux = pf.raizlista;
     while (aux != NULL) {
         printf("%d", aux->BYTEPOS);
