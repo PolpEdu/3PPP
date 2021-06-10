@@ -30,50 +30,7 @@ static char base[] =
          'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'o', 'u', 'u',
          'u', 'u', 'u', 'u', '\0'};
 
-char *fgets_c_u8(char *s, int count, FILE *stream) {
-    int i, c, restante;
-    i = 0;
-    for (restante = count; restante > 0 && (c = getc(stream)) != EOF && c != '\n'; restante--) {
-        s[i++] = (char) c;
-        if ((c & 0xF8) == 0xF0) {
-            // este é o carater inicial de uma sequência de 4 bytes
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-        } else if ((c & 0xF0) == 0xE0) {
-            // este é o carater inicial de uma sequência de 3 bytes
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-        } else if ((c & 0xE0) == 0xC0) {
-            // este é o carater inicial de uma sequência de 2 bytes
-            s[i++] = (char) getc(stream);
-        }
-    }
-    if (c == '\n') {
-        s[i] = (char) c;
-        ++i;
-    }
-    if (c == EOF && (restante == count))
-        return NULL;
-    else {
-        s[i] = '\0';
-        return s;
-    }
-}
 
-int numerodebytesnumchar(unsigned char val) {
-    //o primeiro byte de uma char utf-8 diz quantos bytes há na palavra.
-    if (val == '\n') return 2; //adicionar esta exceção
-    else if (val < 128) {
-        return 1;
-    } else if (val < 224) {
-        return 2;
-    } else if (val < 240) {
-        return 3;
-    } else {
-        return 4;
-    }
-}
 
 //! Get do proximo input linha da consola.
 int get_one_line(FILE *fich, char *linha, int lim) {
@@ -341,35 +298,8 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
 
     fclose(fich2B);
 }
-void pontosfinaisgenerator(FILE *fichread, int *pontosfinais){
-    int bytes, currentbytes;
-    char c;
-    //inicializar a minha array que vai conter todos os pontos finais
-    for (int i = 0; i < MAXNOME*2; ++i) {
-        pontosfinais[i] = 0;
-    }
-    //todo: talvez mudar para mallocs
-
-    int i =0;
-    while (fgets_c_u8(&c, 1, fichread) != NULL) {
-        currentbytes = numerodebytesnumchar((unsigned char) c);
-        bytes += currentbytes;
-        //Find pontos todos os pontos finais.
-        if('.'==c){
-            //printf("\n%d\n", bytes);
-            pontosfinais[i] = bytes;
-            i++;
-        }
-        //printf("%s",&c);
-    }
-}
-
 void checkcontexto(long int bytepal, char *nometxt) {
     /// loop pelo texto, encontro os pontos finais e vejo se eles estão dentro
-    int bytes, currentbytes,pontosfinais[MAXNOME*2];
-    char c;
-
-
 
     FILE *fichread = NULL;
     //Abrir um ficheiro para ler do contexto.
@@ -385,49 +315,20 @@ void checkcontexto(long int bytepal, char *nometxt) {
 
         }
     }
-
-    pontosfinaisgenerator(fichread,pontosfinais);
-
-    //tenho todos os pontos finais.
-    int frasetotinicio;
-    int frasetotfinal;
-    //vou agora ver onde é que o byte das palavras encaixa.
-    for (int j = 0; j < MAXNOME*2; ++j) {
-        //printf("pf: %d\n",pontosfinais[j]);
-        if(j>(sizeof(pontosfinais)/sizeof(pontosfinais[0]))){
-            break;
-        }
-        if((pontosfinais[j-1]< bytepal) && (bytepal< pontosfinais[j])) {
-            frasetotinicio = pontosfinais[j-2];
-            frasetotfinal = pontosfinais [j+1];
-        }
-    }
-    //segundo loop para ter a frase.
-    bytes =0;
-    fseek(fichread, 0, SEEK_SET); //voltar para o inicio.
-    printf("\nFrase Anterior: \n");
-
-    int frases = 0;
-    while (fgets_c_u8(&c, 1, fichread) != NULL) {
-        currentbytes = numerodebytesnumchar((unsigned char) c);
-        bytes += currentbytes;
+    //Todo: fazer fseek para tras ate encontrar dois pontos finais. em vez de anota
+    int c;
+    int pontosfinais =0;
+    while ((c= fgetc(fichread)) != EOF) {
+        fseek(fichread,0,SEEK_CUR-1);
         //Find pontos todos os pontos finais.
-        if(bytes>frasetotinicio && frasetotfinal>=bytes){
-            printf("%s",&c);
-            if('.'==c){
-                ++frases;
-                switch (frases) {
-                    case 1:
-                        printf("\nFrase da Palavra: ");
-                        break;
-                    case 2:
-                        printf("\nFrase Posterior: ");
-                        break;
-                }
-            }
+        if('.'==c){
+            //printf("\n%d\n", bytes);
+
+            pontosfinais++;
         }
+        //printf("%s",&c);
     }
-    frases = 0;
+
     printf("\n--------\n");
     fclose(fichread);
 }
@@ -525,8 +426,7 @@ void pediraouser(struct arvore_binaria *pa, char *nometxt) {
     char escrito[MAXNOME + 1], opcaoescolhida[MAXNOME + 1];
 
     printf("Queres escolher uma gama de letras (selecionar \"gama\") ou selecionar uma palavra? (selecionar \"palavra\")\n");
-    //todo: o user tambem pode querer em vez de escolher palavras, pode so querer gama de letras.
-    // pedir nome do ficheiro que contém os dados
+
     while (opcaoescolhida != NULL) {
         if ((get_one_line(stdin, escrito, MAXNOME + 1) == EOF))
             break;

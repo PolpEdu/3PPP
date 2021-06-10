@@ -1,14 +1,13 @@
 #include "stdbool.h"
 
-#define MAXNOME 50
-#define MAXFRASELEN 400
+#define MAXNOME 60
 #ifndef PPPTRABALHO3_FUNCSPARTE2_H
 #define PPPTRABALHO3_FUNCSPARTE2_H
 
 // esta estrutura serve para ser usada como modulo de leitura
 // como escrevi com este tipo de estrutura vou ter que usar o mesmo tipo para ler.
 typedef struct structpalreadbin {
-    char pal[MAXNOME+1];
+    char pal[MAXNOME];
     long int bytespos; //bytes
 }  strctantg;
 

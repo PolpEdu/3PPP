@@ -3,8 +3,10 @@
 #include "string.h"
 #include "stdlib.h"
 #include "funcsPARTE1.h"
+#include "errno.h"
+#include "stdbool.h"
 
-#define MAXNOME 50 //ESPAÇO MAXIMO QUE UMA PALAVRA PODE OCUPAR EM QUALQUER OCASIÃO.
+#define MAXNOME 60 //ESPAÇO MAXIMO QUE UMA PALAVRA PODE OCUPAR EM QUALQUER OCASIÃO.
 
 //! Get do proximo input linha da consola.
 int get_one_line(FILE *fich, char *linha, int lim) {
@@ -30,20 +32,6 @@ int get_one_line(FILE *fich, char *linha, int lim) {
     return c;
 }
 
-int numerodebytesnumchar(unsigned char val) {
-    //o primeiro byte de uma char utf-8 diz quantos bytes há na palavra.
-    if(val == '\n') return 2; //adicionar esta exceção
-    else if (val < 128) {
-        return 1;
-    } else if (val < 224) {
-        return 2;
-    } else if (val < 240) {
-        return 3;
-    } else {
-        return 4;
-    }
-}
-
 size_t strlen_u8(const char *s) {
     size_t tam = 0, i = 0;
     while (s[i] != 0) {
@@ -54,36 +42,6 @@ size_t strlen_u8(const char *s) {
     return tam;
 }
 
-char *fgets_c_u8(char *s, int count, FILE *stream) {
-    int i, c, restante;
-    i = 0;
-    for (restante = count; restante > 0 && (c = getc(stream)) != EOF && c != '\n'; restante--) {
-        s[i++] = (char) c;
-        if ((c & 0xF8) == 0xF0) {
-            // este é o carater inicial de uma sequência de 4 bytes
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-        } else if ((c & 0xF0) == 0xE0) {
-            // este é o carater inicial de uma sequência de 3 bytes
-            s[i++] = (char) getc(stream);
-            s[i++] = (char) getc(stream);
-        } else if ((c & 0xE0) == 0xC0) {
-            // este é o carater inicial de uma sequência de 2 bytes
-            s[i++] = (char) getc(stream);
-        }
-    }
-    if (c == '\n') {
-        s[i] = (char) c;
-        ++i;
-    }
-    if (c == EOF && (restante == count))
-        return NULL;
-    else {
-        s[i] = '\0';
-        return s;
-    }
-}
 
 void readfile(char *nome_fich2) {
     FILE *fich2B = NULL;
@@ -139,12 +97,12 @@ int checkchar(char c) {
 void writestuct(FILE *fich,char *palavra, int bytes){
     struct structpal node;
 
-    if(strlen_u8(palavra) > 3) { //global word lenght check
+    if(strlen(palavra) > 3) { //global word lenght check
         node = createNODE(palavra, bytes);
         fwrite(&node, sizeof(struct structpal), 1,fich);
         fseek(fich, 0, SEEK_END);
         if(fwrite != 0)
-            fprintf(stdout, "Escrevi NÓ: [pal:%s | bytepos:%ld]\n",node.pal,node.bytespos);
+            fprintf(stdout, "Escrevi NÓ: [pal:%s] | [bytepos:%ld]\n",node.pal,node.bytespos);
     }
 
     memset(&node, 0, sizeof(node));
@@ -189,28 +147,32 @@ void lerficheiro(int argc, char *argv[], char *nome_fich2) {
     if ((fich2= fopen(nome_fich2, "wb")) == NULL)
         fprintf(stderr, "Ficheiro resultados não existe\n");
 
-    char c;
-    int bytes = 0, currentbytes = 0;
+    int c;
+    int soma = 0, currentbytes = 0;
     char palavra[MAXNOME+1] = "";
 
-
-    //usar a função do stor para ver os characteres reais do utf-8
-    while (fgets_c_u8(&c,1,fich) != NULL) {
-        currentbytes = numerodebytesnumchar((unsigned char)c);
+    bool letra=false;
+    ///usar a função do stor para ver os characteres reais do utf-8
+    while ((c= fgetc(fich)) != EOF) {
         //printf("CHAR- %c  BYTES- %d\n",c,currentbytes);
-        bytes += currentbytes;
 
-        if (checkchar(c)){
-            //tenho um espaço, meter mais chars
-            //printf("%d", strlen_u8(palavra));
-            writestuct(fich2,palavra,bytes);
+        if (checkchar(c) && letra){
+            //tenho um espaço e o char anterior foi uma letra, meter mais chars
+
+            writestuct(fich2,palavra,soma- strlen(palavra)); //bytes-wordsize(palavra)-1 para ser o inicio da palavra.
+            letra = false;
         }
-        else {
-            strcat(palavra, &c);
-            // ? fprintf(stdout, "pal:[%s] bytes:[%d] len %d\n",palavra,bytes,strlen_u8(palavra));
+        else if (!checkchar(c)){
+            char ch= (char)c;
+            //strcat(palavra->letras , c);
+            //printf("%c", ch);
+            strncat(palavra, &ch, 1);
+            //fprintf(fchegada, "%c", c);
+            //printf("%c", c);
+            letra = true;
         }
+        soma++;
     }
-    writestuct(fich2,palavra,bytes); //para a ultima palavra
     fclose(fich);
     fclose(fich2);
 }
