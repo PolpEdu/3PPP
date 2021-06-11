@@ -239,7 +239,6 @@ struct no *find_next(struct no *pr, const char *anterior, struct no *candidato) 
 }
 
 bool seguinte(struct arvore_binaria *pa, struct structpal *ppinfo) {
-//struct pessoa seguinte(int *pvazio, const char nome[MAXNOME + 1]) {
     struct no *p;
 
     p = find_next(pa->raiz, ppinfo->pal, NULL);
@@ -519,6 +518,7 @@ void dointervalo(struct arvore_binaria *pa) {
 
         letraatual = gamaesc[0];
         while (letraatual < 123 && 96 < letraatual) {
+            memset(&palBytes, 0, sizeof(palBytes)); //dou reset à palBytes para evitar erros.
             printf("\nLista de palavras com %c inicial:\n", letraatual);
 
             //printf("\n");
@@ -542,9 +542,6 @@ void dointervalo(struct arvore_binaria *pa) {
                     }
                 }
             }
-            memset(&palBytes, 0, sizeof(palBytes)); //dou reset à palBytes para evitar erros.
-
-
             //soamr ate ser igual
             if (letraatual == gamaesc[1])
                 break;
