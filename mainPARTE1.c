@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
     lerficheiro(argc, argv, nome_fich2);
 
     //Teste para ver se estou a ler bem:
-    //? readfile(nome_fich2);
+    //readfile(nome_fich2);
 
     return 0;
 }

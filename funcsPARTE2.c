@@ -17,6 +17,7 @@ bool seguinte(struct arvore_binaria *pa, struct structpal *ppinfo);
 
 struct no *find(struct no *pr, char *pn);
 
+void inicializar_lista(struct listaBYTES *pf);
 
 static char acentuadas[][8] =
         {"á", "Á", "à", "À", "ã", "Ã", "â", "Â", "ä", "Ä", "ç", "Ç",
@@ -142,32 +143,46 @@ void strtobase_u8(char *dest, const char *orig) {
 }
 
 bool colocar_lista(struct listaBYTES *pf, long int numero) {
-    struct no_fila *aux = NULL, *prox;
+    struct no_fila * aux, * prox, * anterior;
 
     //Obter espaço para um novo nó
     aux = (struct no_fila *) malloc(sizeof(struct no_fila));
-    //printf("%d\n",aux);
-    if (aux == NULL) {
+    if (aux == NULL)
+        //não há espaço
         return false;
-    }
-
 
     //construir novo nó da fila
     aux->BYTEPOS = numero;
     aux->next = NULL;
 
     //Procurar a posição onde a mensagem deve ficar
-    prox = pf->raizlista;
     if (pf->raizlista == NULL) {
         // fila vazia, é a primeira mensagem
         pf->raizlista = aux;
-
+        printf("%d",pf->raizlista->BYTEPOS);
     } else {
-
-        while (prox->next != NULL) {
-            prox = prox->next;
+        // fila contém mensagens
+        if (pf->raizlista->BYTEPOS >= numero) { // ALTEREI
+            // inserir à entrada da lista
+            aux->next = pf->raizlista;
+            pf->raizlista = aux;
+        } else {
+            // procurar posição de inserção
+            anterior = pf->raizlista;
+            prox = pf->raizlista->next;
+            while (prox != NULL && prox->BYTEPOS < numero) { //ALTEREI
+                anterior = prox;
+                prox = prox->next;
+            }
+            if (prox == NULL) {
+                // inserir à saída da lista
+                anterior->next = aux;
+            } else {
+                // inserir a meio da lista
+                anterior->next = aux;
+                aux->next = prox;
+            }
         }
-        prox->next = aux;
     }
     return true;
 }
@@ -177,6 +192,7 @@ struct no *addtree(struct no *pr, struct no *p, long int bytes) {
     char nome1[MAXNOME + 1], nome2[MAXNOME + 1];
     if (pr == NULL) {
         //cheguei ao final da arvore
+        colocar_lista(&p->palinfo.nolistabytes,bytes);
         pr = p;
     } else {
         strtobase_u8(nome1, p->palinfo.pal);
@@ -201,8 +217,10 @@ bool colocar(struct arvore_binaria *pa, strctantg palinfodado) {
     strcpy(p->palinfo.pal, palinfodado.pal); //não consigo igualar nós visto que eles são de tipos diferentes.
     //printf("%s",p->palinfo.pal);
     p->left = p->right = NULL;
+    inicializar_lista(&p->palinfo.nolistabytes);
 
     pa->raiz = addtree(pa->raiz, p, palinfodado.bytespos);
+
     return true;
 }
 
@@ -245,6 +263,7 @@ struct no *find(struct no *pr, char *pn) {
 
 void mostrar_tudo(struct arvore_binaria *pa) {
     struct structpal palBytes;
+
     struct no *p;
     struct no_fila *aux;
     palBytes.pal[0] = 0;
@@ -253,6 +272,8 @@ void mostrar_tudo(struct arvore_binaria *pa) {
         p = find(pa->raiz, palBytes.pal);
 
         aux = p->palinfo.nolistabytes.raizlista;
+        if (aux == NULL)
+            continue;
         printf("%ld\n", aux->BYTEPOS);
         while (aux->next != NULL) {
             aux = aux->next;
@@ -260,6 +281,10 @@ void mostrar_tudo(struct arvore_binaria *pa) {
 
         }
     }
+}
+
+void inicializar_lista(struct listaBYTES *pf) {
+    pf->raizlista = NULL;
 }
 
 ///MAIN LOOP:
@@ -277,15 +302,21 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
 
     while (fread(&nolido, sizeof(strctantg), 1, fich2B) != 0) //enquanto tiver algo para ler.
     {
-        fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
+        // ? teste fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
         encontrado = find(pa->raiz,nolido.pal);
         if(encontrado!=NULL){
-            //printf("HEY");
+            printf("ja encontrado, vou adicioar à lista\n");
             colocar_lista(&encontrado->palinfo.nolistabytes, nolido.bytespos);
         }
         else {
-            //colocar na arvore
-            colocar(pa, nolido);
+            printf("Crei novo nó\n");
+
+
+            if(!colocar(pa, nolido))
+            {
+                fprintf(stderr, "Não consegui colocar");
+                return;
+            }
         }
         //printf("%d", ftell(fich2B));
     }
@@ -473,6 +504,8 @@ void gamaesc(struct arvore_binaria *pa) {
                 encontrei = 1;
                 printf("%s ", palBytes.pal);
                 aux = p->palinfo.nolistabytes.raizlista;
+                if(aux == NULL)
+                    continue;
                 printf("%ld\n", aux->BYTEPOS);
                 while (aux->next != NULL) {
                     aux = aux->next;
