@@ -155,11 +155,14 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
     aux->BYTEPOS = numero;
     aux->next = NULL;
 
+    ///Decidi deixar as exceções  de inserir no meio e no inicio mesmo sabendo que a posição dos bytes é sempre inserida para a frente (ordem crescente do texto)
+    // porque no caso de um ficheiro binario defeituoso, o programa consegue correr à mesma!
+
     //Procurar a posição onde a mensagem deve ficar
     if (pf->raizlista == NULL) {
         // fila vazia, é a primeira mensagem
         pf->raizlista = aux;
-        printf("%d",pf->raizlista->BYTEPOS);
+        //printf("%d",pf->raizlista->BYTEPOS);
     } else {
         // fila contém mensagens
         if (pf->raizlista->BYTEPOS >= numero) { // ALTEREI
@@ -305,13 +308,11 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
         // ? teste fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
         encontrado = find(pa->raiz,nolido.pal);
         if(encontrado!=NULL){
-            printf("ja encontrado, vou adicioar à lista\n");
+            //printf("ja encontrado, vou adicioar à lista\n");
             colocar_lista(&encontrado->palinfo.nolistabytes, nolido.bytespos);
         }
         else {
-            printf("Crei novo nó\n");
-
-
+            //printf("Crei novo nó\n");
             if(!colocar(pa, nolido))
             {
                 fprintf(stderr, "Não consegui colocar");
