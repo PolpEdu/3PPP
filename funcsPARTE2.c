@@ -477,20 +477,75 @@ void palavraesc(struct arvore_binaria *pa, char *nometxt) {
         *palavraescolhida = '\0'; //reset na variavel palavra escolhida para fazer o loop
     }
 }
+void dointervalo(struct arvore_binaria *pa){
+    char gamaesc[MAXNOME + 1], escritopal[MAXNOME], gamapal[MAXNOME + 1], nomeutf8[MAXNOME + 1], *token;
+    int gamalen, encontrei;
+    struct structpal palBytes;
+    struct no *p;
+    struct no_fila *aux;
 
-void gamaesc(struct arvore_binaria *pa) {
+    while (escritopal != NULL) {
+        printf("\nInsere a gama:\n");
+
+        if ((get_one_line(stdin, escritopal, MAXNOME + 1) == EOF))
+            break;
+        strcpy(gamaesc, escritopal);
+
+        gamalen = strlen(gamaesc);
+
+        for (int i = 0; i < gamalen; ++i) {
+            printf("Palavras que comecem por: %c",gamaesc[i]);
+
+            //todo mexer co mo whjile
+
+            //printf("%d",pa);
+            while (seguinte(pa, &palBytes)) { //loop pela arvore
+                strtobase_u8(nomeutf8, palBytes.pal);
+                strncpy(gamapal, nomeutf8, gamalen); //reduzo a palavra a uma gama
+                gamapal[gamalen] = 0; //adicionar o \0 final.
+
+                //printf("gamnapal: %s|||palesc: %s\n", gamapal,palavraescolhida);
+                p = find(pa->raiz, palBytes.pal);
+                if (strcmp(gamapal, gamaesc) == 0) {
+                    encontrei = 1; //para não repetir
+                    printf("%s ", palBytes.pal);
+                    aux = p->palinfo.nolistabytes.raizlista;
+                    if(aux == NULL)
+                        continue;
+                    printf("%ld\n", aux->BYTEPOS);
+                    while (aux->next != NULL) {
+                        aux = aux->next;
+                        printf("%s ", palBytes.pal);
+                        printf("%ld\n", aux->BYTEPOS);
+
+                    }
+                }
+        }
+
+
+        }
+        if (!encontrei) fprintf(stderr, "\nNão consegui encontrar nenhuma palavra que favorecesse a pesquisa. Tenta de novo:\n");
+        memset(&palBytes, 0, sizeof(palBytes)); //dou reset à palBytes para evitar erros.
+        encontrei = 0; //dou reset à variavel encontrei
+    }
+}
+
+
+void dogama(struct arvore_binaria *pa){
     char palavraescolhida[MAXNOME + 1], escritopal[MAXNOME], gamapal[MAXNOME + 1], nomeutf8[MAXNOME + 1];
     int gamalen, encontrei;
     struct structpal palBytes;
     struct no *p;
     struct no_fila *aux;
 
-
     while (escritopal != NULL) {
-        printf("\nEscolhe uma gama de letras:\n");
+        printf("\nInsere a gama:\n");
+
         if ((get_one_line(stdin, escritopal, MAXNOME + 1) == EOF))
             break;
         strcpy(palavraescolhida, escritopal);
+
+
         gamalen = strlen(palavraescolhida);
 
         //printf("%d",pa);
@@ -502,7 +557,7 @@ void gamaesc(struct arvore_binaria *pa) {
             //printf("gamnapal: %s|||palesc: %s\n", gamapal,palavraescolhida);
             p = find(pa->raiz, palBytes.pal);
             if (strcmp(gamapal, palavraescolhida) == 0) {
-                encontrei = 1;
+                encontrei = 1; //para não repetir
                 printf("%s ", palBytes.pal);
                 aux = p->palinfo.nolistabytes.raizlista;
                 if(aux == NULL)
@@ -516,10 +571,35 @@ void gamaesc(struct arvore_binaria *pa) {
                 }
             }
         }
-        if (!encontrei) fprintf(stderr, "Não consegui encontrar nenhuma palavra que favorecesse a pesquisa.\n");
+        if (!encontrei) fprintf(stderr, "\nNão consegui encontrar nenhuma palavra que favorecesse a pesquisa. Tenta de novo:\n");
         memset(&palBytes, 0, sizeof(palBytes)); //dou reset à palBytes para evitar erros.
         encontrei = 0; //dou reset à variavel encontrei
     }
+}
+
+void gamaesc(struct arvore_binaria *pa) {
+    char selecionado[MAXNOME+1], opsel[MAXNOME+1];
+
+    printf("\nQueres que a gama seja de que tipo?\n\nEscolher uma gama de inicio, ou seja, imprimir o conjunto que contem essas letras iniciais (escolher \"iniciais\")\n"
+           "Escolher uma gama de letras inicias ,ou seja, imprimir somente as letras no intrevalo da gama (escolher \"intrevalo\"):\n");
+
+    while (selecionado != NULL){
+        if ((get_one_line(stdin, selecionado, MAXNOME + 1) == EOF))
+            break;
+        strtobase_u8(opsel, selecionado);
+        if (strcoll(opsel, "iniciais") == 0) { //selecionei gama
+            printf("Selecionaste imprimir um conjunto de letras iniciais com mais de uma letra.\n");
+            dogama(pa);
+            break;
+        } else if (strcoll(opsel, "intrevalo") == 0) {
+            printf("Selecionaste imprimir um conjunto de letras iniciais apenas com a gama selecionada.\n");
+            dointervalo(pa);
+            break; //selecionei palavra
+        }
+        fprintf(stderr, "Opção inválida. Tenta de novo:\n");
+        *selecionado = '\0'; //faço com que a opção escolhida seja NULL para voltar a fazer o loop
+    }
+
 }
 
 void pediraouser(struct arvore_binaria *pa, char *nometxt) {
