@@ -145,7 +145,7 @@ bool colocar_lista(struct listaBYTES *pf, long int numero) {
     struct no_fila *aux = NULL, *prox;
 
     //Obter espaço para um novo nó
-    aux = (struct no_fila *) malloc(sizeof(struct no_fila)*25);
+    aux = (struct no_fila *) malloc(sizeof(struct no_fila));
     //printf("%d\n",aux);
     if (aux == NULL) {
         return false;
@@ -176,9 +176,8 @@ struct no *addtree(struct no *pr, struct no *p, long int bytes) {
     int cond;
     char nome1[MAXNOME + 1], nome2[MAXNOME + 1];
     if (pr == NULL) {
+        //cheguei ao final da arvore
         pr = p;
-        colocar_lista(&pr->palinfo.nolistabytes, bytes);
-
     } else {
         strtobase_u8(nome1, p->palinfo.pal);
         strtobase_u8(nome2, pr->palinfo.pal);
@@ -187,8 +186,6 @@ struct no *addtree(struct no *pr, struct no *p, long int bytes) {
             pr->right = addtree(pr->right, p, bytes);
         } else if (cond < 0) {
             pr->left = addtree(pr->left, p, bytes);
-        } else {
-            colocar_lista(&pr->palinfo.nolistabytes, bytes);
         }
     }
     return pr;
@@ -201,7 +198,8 @@ bool colocar(struct arvore_binaria *pa, strctantg palinfodado) {
     if (p == NULL)
         return false;
 
-    strcpy(p->palinfo.pal, palinfodado.pal);
+    strcpy(p->palinfo.pal, palinfodado.pal); //não consigo igualar nós visto que eles são de tipos diferentes.
+    //printf("%s",p->palinfo.pal);
     p->left = p->right = NULL;
 
     pa->raiz = addtree(pa->raiz, p, palinfodado.bytespos);
@@ -273,21 +271,21 @@ void readfileInserir(char *nome_fich2, struct arvore_binaria *pa) {
         return;
     }
 
-    // fprintf(stdout, "\n\nReading.....\n");
-    fseek(fich2B, 0, SEEK_END);
-    int n = ftell(fich2B); //tamanho total
-    // printf("tam tot: %d\n", n);
-
     fseek(fich2B, 0, SEEK_SET);
     struct structpalreadbin nolido;
-    while (ftell(fich2B) != n) //enquanto não estamos no final.
-    {
-        fread(&nolido, sizeof(struct structpalreadbin), 1, fich2B);
-        // ? teste fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
+    struct no *encontrado;
 
-        if (!colocar(pa, nolido)) {
-            printf("Não há espaço para inserir\n");
-            break;
+    while (fread(&nolido, sizeof(strctantg), 1, fich2B) != 0) //enquanto tiver algo para ler.
+    {
+        fprintf(stdout, "Li Nó: [%s] bytepos: [%ld]\n", nolido.pal, nolido.bytespos);
+        encontrado = find(pa->raiz,nolido.pal);
+        if(encontrado!=NULL){
+            //printf("HEY");
+            colocar_lista(&encontrado->palinfo.nolistabytes, nolido.bytespos);
+        }
+        else {
+            //colocar na arvore
+            colocar(pa, nolido);
         }
         //printf("%d", ftell(fich2B));
     }

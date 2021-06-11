@@ -97,7 +97,7 @@ int checkchar(char c) {
 void writestuct(FILE *fich,char *palavra, int bytes){
     struct structpal node;
 
-    if(strlen(palavra) > 3) { //global word lenght check
+    if(strlen_u8(palavra) > 3) { //global word lenght check
         node = createNODE(palavra, bytes);
         fwrite(&node, sizeof(struct structpal), 1,fich);
         fseek(fich, 0, SEEK_END);

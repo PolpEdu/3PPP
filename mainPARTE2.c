@@ -12,7 +12,7 @@ int main()
 
     getname(nomedoficheirobinario);
     readfileInserir(nomedoficheirobinario,&arvore);
-    //? teste mostrar_tudo(&arvore);
+    mostrar_tudo(&arvore);
 
 
     pediraouser(&arvore, "fonte.txt");
